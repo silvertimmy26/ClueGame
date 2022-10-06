@@ -1,12 +1,13 @@
 package experiment;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class TestBoard {
 	
 	private ArrayList<TestBoardCell> board;
-	private Set<TestBoardCell> targets;
+	private Set<TestBoardCell> targets = new HashSet<TestBoardCell>();
 	
 	public TestBoard() {
 		board = new ArrayList<TestBoardCell>();

@@ -7,7 +7,7 @@ public class TestBoardCell {
 	
 	private int row;
 	private int col;
-	private Set<TestBoardCell> AdjList;
+	private Set<TestBoardCell> AdjList = new HashSet<TestBoardCell>();
 	
 	public TestBoardCell(int row, int col) {
 		super();
@@ -16,7 +16,6 @@ public class TestBoardCell {
 	}
 
 	public Set<TestBoardCell> getAdjList() {
-		AdjList = new HashSet<TestBoardCell>();
 		return AdjList;
 	}
 
