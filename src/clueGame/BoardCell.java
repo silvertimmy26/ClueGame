@@ -12,7 +12,7 @@ public class BoardCell {
 	private boolean roomLabel;
 	private boolean roomCenter;
 	private char secretPassage;
-	// private Boolean isRoom=false;
+	private boolean isRoom=false;
 	// private Boolean isOccupied=false;
 	private Set<BoardCell> adjList = new HashSet<BoardCell>();
 	
@@ -53,6 +53,27 @@ public class BoardCell {
 	public char getSecretPassage() {
 		return 0;
 	}
+
+	public void setRoomLabel(boolean roomLabel) {
+		this.roomLabel = roomLabel;
+	}
+
+	public void setRoomCenter(boolean roomCenter) {
+		this.roomCenter = roomCenter;
+	}
+
+	public void setSecretPassage(char secretPassage) {
+		this.secretPassage = secretPassage;
+	}
+
+	public void setIsRoom(boolean isRoom) {
+		this.isRoom = isRoom;
+	}
+
+	public void setDoorDirection(DoorDirection doorDirection) {
+		this.doorDirection = doorDirection;
+	}
+	
 	
 	
 	
