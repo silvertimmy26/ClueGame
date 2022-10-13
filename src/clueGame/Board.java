@@ -103,7 +103,7 @@ public class Board {
     	Scanner myScanner=new Scanner(layout);
     	
     	//holdingNumFor Pass is all about the number of columns gotten
-    	int holdingNumForPass=0;
+    	int columnSize=0;
     	//An array list to hold all of the letters in order
     	ArrayList<String> cells=new ArrayList<String>();
     	
@@ -113,12 +113,12 @@ public class Board {
     		String[] tempHold=temp.split(",");
     		
     		//If first time through, sets our column number to the number gotten
-    		if(holdingNumForPass==0) {
-    			holdingNumForPass=tempHold.length;
+    		if(columnSize==0) {
+    			columnSize=tempHold.length;
     		}
     		//Checks for error of improper column numbers
     		else {
-    			if(tempHold.length!=holdingNumForPass) {
+    			if(tempHold.length!=columnSize) {
     				throw new BadConfigFormatException();
     			}
     		}
@@ -131,11 +131,11 @@ public class Board {
     	}
     	
     	//Get out number of rows and columns from the files
-    	numRows=(cells.size() / holdingNumForPass);
-    	numColumns=(holdingNumForPass);
+    	numRows=(cells.size() / columnSize);
+    	numColumns=(columnSize);
     	
-    	//Set up variables curr (spot in array list) and tempDoorNum(current number of doors found)
-    	int curr=0;
+    	//Set up variables arrayListLoc (spot in array list) and tempDoorNum(current number of doors found)
+    	int arrayListLoc=0;
     	int tempDoorNum=0;
     	//Sets up a grid that will become the main grid eventually
     	BoardCell[][] gridTemp= new BoardCell[numRows][numColumns];
@@ -146,18 +146,20 @@ public class Board {
     			DoorDirection direction= DoorDirection.NONE;
     			
     			//Creates a string of the current array list location
-    			String currSpot=cells.get(curr);
+    			String currSpot=cells.get(arrayListLoc);
     			
     			//Makes a board cell with the string and data given
-    			BoardCell current= new BoardCell(i,j,currSpot.charAt(0),direction);
+    			BoardCell currCell= new BoardCell(i,j,currSpot.charAt(0),direction);
     			
     			//Checks for specific rooms
-    			if(roomMap.containsKey(current.getInitial())&& roomMap.get(current.getInitial()).getCenterCell()!=null){
-    				current.setIsRoom(true);
+    			char currCellInitial = currCell.getInitial();
+    			
+				if(roomMap.containsKey(currCellInitial)&& roomMap.get(currCellInitial).getCenterCell()!=null){
+    				currCell.setIsRoom(true);
     			}
     			
     			//looks to make sure the spot is in the room map
-    			if(!roomMap.containsKey(current.getInitial())) {
+    			if(!roomMap.containsKey(currCellInitial)) {
     				throw new BadConfigFormatException();
     			}
     			
@@ -170,33 +172,33 @@ public class Board {
     				switch(currSpot.charAt(1)) {
     				
     					case '*':
-    						current.setRoomCenter(true);
-    						roomMap.get(current.getInitial()).setCenterCell(current);
+    						currCell.setRoomCenter(true);
+    						roomMap.get(currCellInitial).setCenterCell(currCell);
     						break;
     					case '#':
-    						current.setRoomLabel(true);
-    						roomMap.get(current.getInitial()).setLabelCell(current);
+    						currCell.setRoomLabel(true);
+    						roomMap.get(currCellInitial).setLabelCell(currCell);
     						break;
     					case '<':
-    						current.setDoorDirection(DoorDirection.LEFT);
+    						currCell.setDoorDirection(DoorDirection.LEFT);
     						tempDoorNum++;
     						break;
     					case '^':
-    						current.setDoorDirection(DoorDirection.UP);
+    						currCell.setDoorDirection(DoorDirection.UP);
     						tempDoorNum++;
     						break;
     					case '>':
-    						current.setDoorDirection(DoorDirection.RIGHT);
+    						currCell.setDoorDirection(DoorDirection.RIGHT);
     						tempDoorNum++;
     						break;
     					case 'v':
-    						current.setDoorDirection(DoorDirection.DOWN);
+    						currCell.setDoorDirection(DoorDirection.DOWN);
     						tempDoorNum++;
     						break;
     					default:
     						//Default check for secret passage, and looks to make sure location is apart of the board
     						if(roomMap.containsKey(currSpot.charAt(1))) {
-    							current.setSecretPassage(currSpot.charAt(1));
+    							currCell.setSecretPassage(currSpot.charAt(1));
     						}
     						else {
     							throw new BadConfigFormatException();
@@ -206,8 +208,8 @@ public class Board {
     				}
     			}
     			//Iterate the array list location and add our new cell to the temp grid
-    			curr++;
-    			gridTemp[i][j]=current;
+    			arrayListLoc++;
+    			gridTemp[i][j]=currCell;
     		}
     	}
     	
