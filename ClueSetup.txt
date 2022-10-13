@@ -1,0 +1,13 @@
+﻿// Rooms and room cards
+Room, Jail, J
+Room, Sheriff's Office, O
+Room, Cigar Store, C
+Room, Post Office, P
+Room, Horse Stables, H
+Room, Bank, B
+Room, Motel, M
+Room, Saloon, S
+Room, Gunsmith, G
+// other spaces on board
+Space, Unused, X
+Space, Walkway, W

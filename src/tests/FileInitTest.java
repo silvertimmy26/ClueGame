@@ -27,20 +27,20 @@ class FileInitTest {
 	
 	@Test
 	public void testRoomMap() {
-		// make sure there are nine rooms
-		assertEquals(9, board.roomMapSize());
+		// make sure there are eleven rooms
+		assertEquals(11, board.roomMapSize());
 		// make sure all nine rooms exist on board
-		assertEquals('J', board.getCell(8, 0).getInitial());
-		assertEquals('H', board.getCell(14, 2).getInitial());
+		assertEquals('J', board.getCell(0, 0).getInitial());
+		assertEquals('H', board.getCell(14, 1).getInitial());
 		assertEquals('S', board.getCell(17, 12).getInitial());
 		assertEquals('G', board.getCell(22, 18).getInitial());
 	}
 	
 	@Test
 	public void testRowColumn() {
-		// ensures 24 rows, 23 columns
-		assertEquals(24, board.getNumRows());
-		assertEquals(23, board.getNumColumns());
+		// ensures 25 rows, 24 columns
+		assertEquals(25, board.getNumRows());
+		assertEquals(24, board.getNumColumns());
 	}
 	
 	@Test

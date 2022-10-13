@@ -35,23 +35,28 @@ public class BoardCell {
 	}
 
 	public boolean isDoorway() {
-		return false;
+		if(doorDirection != DoorDirection.NONE) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public DoorDirection getDoorDirection() {
-		return null;
+		return doorDirection;
 	}
 
 	public boolean isRoomCenter() {
-		return false;
+		return roomCenter;
 	}
 
 	public boolean isLabel() {
-		return false;
+		return roomLabel;
 	}
 
 	public char getSecretPassage() {
-		return 0;
+		return secretPassage;
 	}
 
 	public void setRoomLabel(boolean roomLabel) {
