@@ -13,7 +13,7 @@ public class BoardCell {
 	private boolean roomCenter;
 	private char secretPassage;
 	private boolean isRoom=false;
-	// private Boolean isOccupied=false;
+	private Boolean isOccupied=false;
 	private Set<BoardCell> adjList = new HashSet<BoardCell>();
 	
 	
@@ -79,7 +79,9 @@ public class BoardCell {
 		this.doorDirection = doorDirection;
 	}
 	
-	
+	public void setOccupied(Boolean occupied) {
+		
+	}
 	
 	
 }

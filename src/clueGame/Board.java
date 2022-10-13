@@ -226,6 +226,25 @@ public class Board {
 		return;
 	}
 
+	
+	public Set<BoardCell> getAdjList(int row, int column){
+		Set<BoardCell> tempSet= new HashSet<BoardCell>();
+		return tempSet;
+	}
+	
+	public void calcTargets(BoardCell cell, int roll) {
+		
+	}
+	
+	public Set<BoardCell> getTargets(){
+		Set<BoardCell> tempSet= new HashSet<BoardCell>();
+		return tempSet;
+	}
+	
+	
+	
+	
+	
 	public Room getRoom(char room) {
 		return roomMap.get(room);
 	}
