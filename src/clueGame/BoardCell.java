@@ -27,7 +27,7 @@ public class BoardCell {
 	}
 
 	public void addAdj(BoardCell adj) {
-		return;
+		adjList.add(adj);
 	}
 	
 	public char getInitial() {
@@ -57,6 +57,10 @@ public class BoardCell {
 
 	public char getSecretPassage() {
 		return secretPassage;
+	}
+	
+	public boolean getIsRoom() {
+		return isRoom;
 	}
 
 	public void setRoomLabel(boolean roomLabel) {

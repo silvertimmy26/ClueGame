@@ -2,6 +2,7 @@ package clueGame;
 
 import clueGame.BadConfigFormatException;
 import clueGame.DoorDirection;
+import experiment.TestBoardCell;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,6 +52,99 @@ public class Board {
     		e.getMessage();
     	}
     	
+		for(int i=0; i<numRows; i++) {
+			for(int j=0; j<numColumns; j++) {   	
+				BoardCell current = grid[i][j];
+				if (i - 1 >= 0) {
+					if (!(grid[i - 1][j].getIsRoom()) && roomMap.get(grid[i - 1][j].getInitial()).getName() != "Unused") {
+						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+							current.addAdj(grid[i-1][j]);
+						} else {	
+							switch(grid[i][j].getDoorDirection()) {
+								case LEFT:
+									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									break;
+								case RIGHT:
+									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									break;
+								case UP:
+									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									break;
+								case DOWN:
+									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									break;
+							}		
+						}
+					}
+				}
+				else if (i + 1 < numRows) {
+					if (!(grid[i + 1][j].getIsRoom()) && roomMap.get(grid[i + 1][j].getInitial()).getName() != "Unused") {
+						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+							current.addAdj(grid[i+1][j]);
+						} else {	
+							switch(grid[i][j].getDoorDirection()) {
+								case LEFT:
+									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									break;
+								case RIGHT:
+									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									break;
+								case UP:
+									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									break;
+								case DOWN:
+									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									break;
+							}		
+						}
+					}
+				}
+				else if (j - 1 >= 0) {
+					if (!(grid[i][j - 1].getIsRoom()) && roomMap.get(grid[i][j - 1].getInitial()).getName() != "Unused") {
+						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+							current.addAdj(grid[i][j - 1]);
+						} else {	
+							switch(grid[i][j].getDoorDirection()) {
+								case LEFT:
+									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									break;
+								case RIGHT:
+									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									break;
+								case UP:
+									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									break;
+								case DOWN:
+									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									break;
+							}		
+						}
+					}
+				}
+				else if (j + 1 < numColumns) {
+					if (!(grid[i][j + 1].getIsRoom()) && roomMap.get(grid[i][j + 1].getInitial()).getName() != "Unused") {
+						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+							current.addAdj(grid[i][j + 1]);
+						} else {	
+							switch(grid[i][j].getDoorDirection()) {
+								case LEFT:
+									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									break;
+								case RIGHT:
+									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									break;
+								case UP:
+									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									break;
+								case DOWN:
+									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									break;
+							}		
+						}
+					}
+				}
+			}
+		}
     }
     
     public void loadSetupConfig() throws BadConfigFormatException, FileNotFoundException {
