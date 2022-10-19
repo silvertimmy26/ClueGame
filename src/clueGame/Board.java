@@ -18,6 +18,8 @@ public class Board {
 	private BoardCell[][] grid;
 	private int numRows;
 	private int numColumns;
+	private Set<BoardCell> targets;
+	private Set<BoardCell> visited;
 	private String layoutConfigFile;
 	private String setupConfigFile;
 	private int doorNum=0;
@@ -54,90 +56,154 @@ public class Board {
     	
 		for(int i=0; i<numRows; i++) {
 			for(int j=0; j<numColumns; j++) {   	
+				
 				BoardCell current = grid[i][j];
+				
+				if (current.isRoomCenter()) {
+					
+					//System.out.println(current.getInitial());
+					
+					if (current.getSecretPassage() != ' ') {
+						current.addAdj(roomMap.get(current.getSecretPassage()).getCenterCell());
+					}
+					continue;
+				}
+				
+				
 				if (i - 1 >= 0) {
-					if (!(grid[i - 1][j].getIsRoom()) && roomMap.get(grid[i - 1][j].getInitial()).getName() != "Unused") {
+					
+					if (grid[i - 1][j].getIsRoom() == false && roomMap.get(grid[i - 1][j].getInitial()).getName() != "Unused") {
+						
+						
+						if (i == 8 && j == 17) {
+							System.out.println(); 
+						}
+						
+						
+						//New
+						if (grid[i - 1][j].getInitial() == 'W') {
+							current.addAdj(grid[i - 1][j]);
+						}
+						//New
+						
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
-							current.addAdj(grid[i-1][j]);
+							//current.addAdj(grid[i-1][j]);
 						} else {	
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case RIGHT:
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case UP:
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case DOWN:
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 							}		
 						}
 					}
 				}
-				else if (i + 1 < numRows) {
+				if (i + 1 < numRows) {
 					if (!(grid[i + 1][j].getIsRoom()) && roomMap.get(grid[i + 1][j].getInitial()).getName() != "Unused") {
+						
+						//New
+						if (grid[i + 1][j].getInitial() == 'W') {
+							current.addAdj(grid[i + 1][j]);
+						}
+						//New
+						
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
-							current.addAdj(grid[i+1][j]);
-						} else {	
+							//current.addAdj(grid[i+1][j]);
+						} else {
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case RIGHT:
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case UP:
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case DOWN:
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 							}		
 						}
 					}
 				}
-				else if (j - 1 >= 0) {
+				if (j - 1 >= 0) {
 					if (!(grid[i][j - 1].getIsRoom()) && roomMap.get(grid[i][j - 1].getInitial()).getName() != "Unused") {
-						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+						
+						//New
+						if (grid[i][j - 1].getInitial() == 'W') {
 							current.addAdj(grid[i][j - 1]);
+						}
+						//New
+						
+						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+							//current.addAdj(grid[i][j - 1]);
 						} else {	
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case RIGHT:
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case UP:
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case DOWN:
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 							}		
 						}
 					}
 				}
-				else if (j + 1 < numColumns) {
+				if (j + 1 < numColumns) {
 					if (!(grid[i][j + 1].getIsRoom()) && roomMap.get(grid[i][j + 1].getInitial()).getName() != "Unused") {
-						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+						
+						//New
+						if (grid[i][j + 1].getInitial() == 'W') {
 							current.addAdj(grid[i][j + 1]);
+						}
+						//New
+						
+						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
+							//current.addAdj(grid[i][j + 1]);
 						} else {	
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case RIGHT:
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
+									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case UP:
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 								case DOWN:
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
+									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
 							}		
 						}
@@ -234,6 +300,8 @@ public class Board {
     	//Sets up a grid that will become the main grid eventually
     	BoardCell[][] gridTemp= new BoardCell[numRows][numColumns];
     	
+    	Set<String> secretRoomCells = new HashSet<String>();
+    	
     	//goes through each spot of data
     	for(int i=0; i<numRows; i++) {
     		for(int j=0; j<numColumns; j++) {
@@ -248,9 +316,9 @@ public class Board {
     			//Checks for specific rooms
     			char currCellInitial = currCell.getInitial();
     			
-				if(roomMap.containsKey(currCellInitial)&& roomMap.get(currCellInitial).getCenterCell()!=null){
-    				currCell.setIsRoom(true);
-    			}
+				//if(roomMap.containsKey(currCellInitial) && roomMap.get(currCellInitial).getCenterCell()!=null){
+    			//	currCell.setIsRoom(true);
+    			//}
     			
     			//looks to make sure the spot is in the room map
     			if(!roomMap.containsKey(currCellInitial)) {
@@ -266,33 +334,45 @@ public class Board {
     				switch(currSpot.charAt(1)) {
     				
     					case '*':
-    						currCell.setRoomCenter(true);
+    						currCell.setRoomCenter(true);						
     						roomMap.get(currCellInitial).setCenterCell(currCell);
+    						currCell.setIsRoom(true);
+    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '#':
     						currCell.setRoomLabel(true);
     						roomMap.get(currCellInitial).setLabelCell(currCell);
+    						currCell.setInitial(currSpot.charAt(0));
     						break;
-    					case '<':
+    					case '<':    						
     						currCell.setDoorDirection(DoorDirection.LEFT);
     						tempDoorNum++;
+    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '^':
     						currCell.setDoorDirection(DoorDirection.UP);
     						tempDoorNum++;
+    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '>':
     						currCell.setDoorDirection(DoorDirection.RIGHT);
     						tempDoorNum++;
+    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case 'v':
     						currCell.setDoorDirection(DoorDirection.DOWN);
     						tempDoorNum++;
+    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					default:
     						//Default check for secret passage, and looks to make sure location is apart of the board
+    						currCell.setInitial(currSpot.charAt(0));
     						if(roomMap.containsKey(currSpot.charAt(1))) {
     							currCell.setSecretPassage(currSpot.charAt(1));
+    							//System.out.println(currSpot.charAt(1));
+    							//roomMap.get(currSpot.charAt(0)).getCenterCell().setSecretPassage(currSpot.charAt(1));
+    							//System.out.println("hi");
+    							secretRoomCells.add(currSpot);
     						}
     						else {
     							throw new BadConfigFormatException();
@@ -307,12 +387,65 @@ public class Board {
     		}
     	}
     	
+    	for (String b: secretRoomCells) {
+    		roomMap.get(b.charAt(0)).getCenterCell().setSecretPassage(b.charAt(1));
+    		
+    		// NEW
+    		roomMap.get(b.charAt(0)).getCenterCell().addAdj(roomMap.get(b.charAt(1)).getCenterCell());
+    		// NEW
+    	
+    	}    	
+    	
     	//finalize some variables and close out
     	doorNum=tempDoorNum;
     	grid=gridTemp;
     	myScanner.close();
     	return;
     }
+  
+    public void calcTargets(BoardCell startCell, int pathLength) {
+		//Reset targets and visited
+		targets=new HashSet<BoardCell>();
+		visited=new HashSet<BoardCell>();
+		//Call recursive formula
+		visited.add(startCell);
+		calculateTargets(startCell, pathLength);
+		//Remove the starting cell
+		targets.remove(startCell);
+		
+	}
+	
+	public void calculateTargets(BoardCell startCell, int pathLength) {
+		//Obtain adjacent cells
+		Set<BoardCell> temp=startCell.getAdjList();
+		
+		for(BoardCell t:temp) {
+			
+			//If in visited or if occupied, ignore
+			if(visited.contains(t)) {
+				continue;
+			}
+			if(t.isOccupied() && !(t.getIsRoom())) {
+				continue;
+			}
+			
+			//Add cell to visited
+			visited.add(t);
+			
+			//Go through looking if cell should actually be added, or if we call recursive again
+			if(t.getIsRoom()) {
+				targets.add(t);
+				targets.remove(startCell);
+			} else if(pathLength==1) {
+				targets.add(t);
+			} else {
+				calculateTargets(t,pathLength-1);
+			}
+			
+			//Remove cell from visited
+			visited.remove(t);
+		}
+	}
 
 	public void setConfigFiles(String layout, String setup) {
 		layoutConfigFile=layout;
@@ -322,22 +455,12 @@ public class Board {
 
 	
 	public Set<BoardCell> getAdjList(int row, int column){
-		Set<BoardCell> tempSet= new HashSet<BoardCell>();
-		return tempSet;
-	}
-	
-	public void calcTargets(BoardCell cell, int roll) {
-		
+		return grid[row][column].getAdjList();
 	}
 	
 	public Set<BoardCell> getTargets(){
-		Set<BoardCell> tempSet= new HashSet<BoardCell>();
-		return tempSet;
+		return targets;
 	}
-	
-	
-	
-	
 	
 	public Room getRoom(char room) {
 		return roomMap.get(room);

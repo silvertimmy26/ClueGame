@@ -149,6 +149,7 @@ import clueGame.BoardCell;
 		public void testTargetsAtDoor() {
 			// test a roll of 1, at door
 			board.calcTargets(board.getCell(8, 17), 1);
+			System.out.println();
 			Set<BoardCell> targets= board.getTargets();
 			assertEquals(4, targets.size());
 			assertTrue(targets.contains(board.getCell(12, 20)));
@@ -183,7 +184,7 @@ import clueGame.BoardCell;
 			assertTrue(targets.contains(board.getCell(11, 3)));
 			// test a roll of 3
 			board.calcTargets(board.getCell(11, 2), 3);
-			targets= board.getTargets();
+			targets= board.getTargets();	
 			assertEquals(3, targets.size());
 			assertTrue(targets.contains(board.getCell(14, 2)));
 			assertTrue(targets.contains(board.getCell(8, 2)));
@@ -236,7 +237,7 @@ import clueGame.BoardCell;
 			// we want to make sure we can get into a room, even if flagged as 
 			//occupied
 			board.getCell(12, 20).setOccupied(true);
-			board.getCell(8, 18).setOccupied(true);
+			board.getCell(8, 18).setOccupied(true);	
 			board.calcTargets(board.getCell(8, 17), 1);
 			board.getCell(12, 20).setOccupied(false);
 			board.getCell(8, 18).setOccupied(false);

@@ -7,8 +7,8 @@ public class TestBoardCell {
 	
 	private int row;
 	private int col;
-	private Boolean isRoom=false;
-	private Boolean isOccupied=false;
+	private boolean isRoom=false;
+	private boolean isOccupied=false;
 	private Set<TestBoardCell> adjList = new HashSet<TestBoardCell>();
 	
 	public TestBoardCell(int row, int col) {

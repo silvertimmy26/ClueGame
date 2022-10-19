@@ -94,7 +94,7 @@ public class BoardAdjTargetTest {
 		assertTrue(tempList.contains(board.getCell(5, 5)));
 		assertTrue(tempList.contains(board.getCell(2, 2)));
 		
-		tempList=board.getAdjList(21, 9);
+		tempList=board.getAdjList(21, 9);		
 		assertEquals(3,tempList.size());
 		assertTrue(tempList.contains(board.getCell(21, 8)));
 		assertTrue(tempList.contains(board.getCell(22, 9)));
