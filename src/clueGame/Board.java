@@ -333,6 +333,7 @@ public class Board {
     				throw new BadConfigFormatException("Error: Cell is longer than two symbols");
     			}
     			else if(currSpot.length()>1) {
+    				currCell.setInitial(currSpot.charAt(0));
     				//Switch statement to check if the data item has more than 1 item, what the extra item is
     				switch(currSpot.charAt(1)) {
     				
@@ -340,36 +341,29 @@ public class Board {
     						currCell.setRoomCenter(true);						
     						roomMap.get(currCellInitial).setCenterCell(currCell);
     						currCell.setIsRoom(true);
-    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '#':
     						currCell.setRoomLabel(true);
     						roomMap.get(currCellInitial).setLabelCell(currCell);
-    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '<':    						
     						currCell.setDoorDirection(DoorDirection.LEFT);
     						tempDoorNum++;
-    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '^':
     						currCell.setDoorDirection(DoorDirection.UP);
     						tempDoorNum++;
-    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case '>':
     						currCell.setDoorDirection(DoorDirection.RIGHT);
     						tempDoorNum++;
-    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					case 'v':
     						currCell.setDoorDirection(DoorDirection.DOWN);
     						tempDoorNum++;
-    						currCell.setInitial(currSpot.charAt(0));
     						break;
     					default:
     						//Default check for secret passage, and looks to make sure location is apart of the board
-    						currCell.setInitial(currSpot.charAt(0));
     						if(roomMap.containsKey(currSpot.charAt(1))) {
     							currCell.setSecretPassage(currSpot.charAt(1));
     							//System.out.println(currSpot.charAt(1));
