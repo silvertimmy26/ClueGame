@@ -76,9 +76,9 @@ class FileInitTest {
 	public void testRoomCenterCells() {
 		// tests to make sure the center of rooms are correct
 		BoardCell cell = board.getCell(4, 12);
-		assertTrue(cell.isRoomCenter());
+		assertTrue(cell.getIsRoomCenter());
 		cell = board.getCell(20, 12);
-		assertTrue(cell.isRoomCenter());
+		assertTrue(cell.getIsRoomCenter());
 	}
 	
 }

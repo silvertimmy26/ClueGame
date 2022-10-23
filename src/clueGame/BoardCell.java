@@ -34,7 +34,7 @@ public class BoardCell {
 		return initial;
 	}
 
-	public boolean isDoorway() {
+	public boolean getIsDoorway() {
 		if(doorDirection != DoorDirection.NONE) {
 			return true;
 		}
@@ -47,11 +47,11 @@ public class BoardCell {
 		return doorDirection;
 	}
 
-	public boolean isRoomCenter() {
+	public boolean getIsRoomCenter() {
 		return roomCenter;
 	}
 
-	public boolean isLabel() {
+	public boolean getIsLabel() {
 		return roomLabel;
 	}
 
@@ -59,7 +59,7 @@ public class BoardCell {
 		return secretPassage;
 	}
 	
-	public boolean isOccupied() {
+	public boolean getIsOccupied() {
 		return isOccupied;
 	}
 

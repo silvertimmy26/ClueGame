@@ -59,7 +59,7 @@ public class Board {
 				
 				BoardCell current = grid[i][j];
 				
-				if (current.isRoomCenter()) {
+				if (current.getIsRoomCenter()) {
 					
 					if (current.getSecretPassage() != ' ') {
 						current.addAdj(roomMap.get(current.getSecretPassage()).getCenterCell());
@@ -429,7 +429,7 @@ public class Board {
 				continue;
 			}
 			// If it's occupied or is not a room, go to the next BoardCell t
-			if(t.isOccupied() && !(t.getIsRoom())) {
+			if(t.getIsOccupied() && !(t.getIsRoom())) {
 				continue;
 			}
 			
