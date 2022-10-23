@@ -44,14 +44,14 @@ public class Board {
     	try {
     		loadSetupConfig();
     	}catch(Exception e) {
-    		e.getMessage();
+    		e.getMessage(); // syso
     	}
     	
     	//goes through the layout file
     	try {
     		loadLayoutConfig();
     	}catch(Exception e) {
-    		e.getMessage();
+    		e.getMessage(); // syso
     	}
     	
 		for(int i=0; i<numRows; i++) {
@@ -60,8 +60,6 @@ public class Board {
 				BoardCell current = grid[i][j];
 				
 				if (current.isRoomCenter()) {
-					
-					//System.out.println(current.getInitial());
 					
 					if (current.getSecretPassage() != ' ') {
 						current.addAdj(roomMap.get(current.getSecretPassage()).getCenterCell());
@@ -72,37 +70,30 @@ public class Board {
 				
 				if (i - 1 >= 0) {
 					
+					// if space above is not a room and not unused
 					if (grid[i - 1][j].getIsRoom() == false && roomMap.get(grid[i - 1][j].getInitial()).getName() != "Unused") {
 						
-						
-						if (i == 8 && j == 17) {
-							System.out.println(); 
-						}
-						
-						
-						//New
 						if (grid[i - 1][j].getInitial() == 'W') {
 							current.addAdj(grid[i - 1][j]);
 						}
-						//New
 						
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i-1][j]);
 						} else {	
 							switch(grid[i][j].getDoorDirection()) {
-								case LEFT:
+								case LEFT: 	// if the door points left, add the room to the left's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case RIGHT:
+								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case UP:
+								case UP:	// if the door points left, add the above room's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case DOWN:
+								case DOWN:	// if the door points left, add the room below's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
@@ -111,31 +102,30 @@ public class Board {
 					}
 				}
 				if (i + 1 < numRows) {
+					// if space below is not a room and not unused
 					if (!(grid[i + 1][j].getIsRoom()) && roomMap.get(grid[i + 1][j].getInitial()).getName() != "Unused") {
 						
-						//New
 						if (grid[i + 1][j].getInitial() == 'W') {
 							current.addAdj(grid[i + 1][j]);
 						}
-						//New
 						
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i+1][j]);
 						} else {
 							switch(grid[i][j].getDoorDirection()) {
-								case LEFT:
+								case LEFT:	// if the door points left, add the room to the left's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case RIGHT:
+								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case UP:
+								case UP:	// if the door points left, add the above room's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case DOWN:
+								case DOWN:	// if the door points left, add the room below's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
@@ -144,31 +134,30 @@ public class Board {
 					}
 				}
 				if (j - 1 >= 0) {
+					// if space to the left is not a room and not unused
 					if (!(grid[i][j - 1].getIsRoom()) && roomMap.get(grid[i][j - 1].getInitial()).getName() != "Unused") {
 						
-						//New
 						if (grid[i][j - 1].getInitial() == 'W') {
 							current.addAdj(grid[i][j - 1]);
 						}
-						//New
 						
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i][j - 1]);
 						} else {	
 							switch(grid[i][j].getDoorDirection()) {
-								case LEFT:
+								case LEFT:	// if the door points left, add the room to the left's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case RIGHT:
+								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case UP:
+								case UP:	// if the door points left, add the above room's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case DOWN:
+								case DOWN:	// if the door points left, add the room below's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
@@ -176,32 +165,31 @@ public class Board {
 						}
 					}
 				}
+				// if space to the right is not a room and not unused
 				if (j + 1 < numColumns) {
 					if (!(grid[i][j + 1].getIsRoom()) && roomMap.get(grid[i][j + 1].getInitial()).getName() != "Unused") {
 						
-						//New
 						if (grid[i][j + 1].getInitial() == 'W') {
 							current.addAdj(grid[i][j + 1]);
 						}
-						//New
 						
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i][j + 1]);
 						} else {	
 							switch(grid[i][j].getDoorDirection()) {
-								case LEFT:
+								case LEFT:	// if the door points left, add the room to the left's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case RIGHT:
+								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
 									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case UP:
+								case UP:	// if the door points left, add the above room's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
-								case DOWN:
+								case DOWN:	// if the door points left, add the room below's center cell to adjacency
 									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
 									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
 									break;
@@ -430,7 +418,7 @@ public class Board {
 			}
 			
 			//Add cell to visited
-			visited.add(t);
+			visited.add(t); // move before loop and add start cell
 			
 			//Go through looking if cell should actually be added, or if we call recursive again
 			if(t.getIsRoom()) {
@@ -443,7 +431,7 @@ public class Board {
 			}
 			
 			//Remove cell from visited
-			visited.remove(t);
+			visited.remove(t); // move down a loop
 		}
 	}
 
