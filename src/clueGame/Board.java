@@ -239,7 +239,7 @@ public class Board {
     				Room tempRoom= new Room(roomInfo[1]);
     				//If there is more than 1 character for the room/space, throw an error
     				if(roomInfo[2].length()>1) {
-    					throw new BadConfigFormatException();
+    					throw new BadConfigFormatException("Error: More than one letter for room symbol");
     				}
     				char tempChar= roomInfo[2].charAt(0);
     				
@@ -249,7 +249,7 @@ public class Board {
     			
     			//throw an error in the case of extra lines in file
     			else {
-    				throw new BadConfigFormatException();
+    				throw new BadConfigFormatException("Error: Undefined space type");
     			}
     		}
     	}
@@ -282,7 +282,7 @@ public class Board {
     		//Checks for error of improper column numbers
     		else {
     			if(tempHold.length!=columnSize) {
-    				throw new BadConfigFormatException();
+    				throw new BadConfigFormatException("Error: Column sizes are inconsistent");
     			}
     		}
     		
@@ -325,12 +325,12 @@ public class Board {
     			
     			//looks to make sure the spot is in the room map
     			if(!roomMap.containsKey(currCellInitial)) {
-    				throw new BadConfigFormatException();
+    				throw new BadConfigFormatException("Error: Cell not supported by room map");
     			}
     			
     			//Makes sure we never have a cell over 2 items long
     			if(currSpot.length()>2) {
-    				throw new BadConfigFormatException();
+    				throw new BadConfigFormatException("Error: Cell is longer than two symbols");
     			}
     			else if(currSpot.length()>1) {
     				//Switch statement to check if the data item has more than 1 item, what the extra item is
@@ -378,7 +378,7 @@ public class Board {
     							secretRoomCells.add(currSpot);
     						}
     						else {
-    							throw new BadConfigFormatException();
+    							throw new BadConfigFormatException("Error: The secret passage room is incompatible/doesn't exist");
     						}
     						break;
     				
