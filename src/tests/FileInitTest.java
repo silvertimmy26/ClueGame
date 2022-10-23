@@ -28,7 +28,7 @@ class FileInitTest {
 	@Test
 	public void testRoomMap() {
 		// make sure there are eleven rooms
-		assertEquals(11, board.roomMapSize());
+		assertEquals(11, board.getRoomMapSize());
 		// make sure all nine rooms exist on board
 		assertEquals('J', board.getCell(0, 0).getInitial());
 		assertEquals('H', board.getCell(14, 1).getInitial());

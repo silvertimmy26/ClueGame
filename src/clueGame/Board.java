@@ -412,13 +412,13 @@ public class Board {
 		visited=new HashSet<BoardCell>();
 		//Call recursive formula
 		visited.add(startCell);
-		calculateTargets(startCell, pathLength);
+		recursiveTargeting(startCell, pathLength);
 		//Remove the starting cell
 		targets.remove(startCell);
 		
 	}
 	
-	public void calculateTargets(BoardCell startCell, int pathLength) {
+	public void recursiveTargeting(BoardCell startCell, int pathLength) {
 		//Obtain adjacent cells
 		Set<BoardCell> temp=startCell.getAdjList();
 		
@@ -443,7 +443,7 @@ public class Board {
 			} else if(pathLength==1) {	// else and if the pathLength is 1, only add t to targets
 				targets.add(t);
 			} else {					// otherwise, do a recursive call to calculateTargets with pathLength minus one
-				calculateTargets(t,pathLength-1);
+				recursiveTargeting(t,pathLength-1);
 			}
 			
 			//Remove cell from visited
@@ -486,7 +486,7 @@ public class Board {
 		return grid[row][col];
 	}
 	
-	public int roomMapSize() {
+	public int getRoomMapSize() {
 		return roomMap.size();
 	}
 
