@@ -391,12 +391,10 @@ public class Board {
     	}
     	
     	for (String b: secretRoomCells) {
-    		roomMap.get(b.charAt(0)).getCenterCell().setSecretPassage(b.charAt(1));
-    		
-    		// NEW
-    		roomMap.get(b.charAt(0)).getCenterCell().addAdj(roomMap.get(b.charAt(1)).getCenterCell());
-    		// NEW
-    	
+    		BoardCell centerCell = roomMap.get(b.charAt(0)).getCenterCell();
+    		BoardCell secretRoomCenter = roomMap.get(b.charAt(1)).getCenterCell();
+			centerCell.setSecretPassage(b.charAt(1));
+			centerCell.addAdj(secretRoomCenter);
     	}    	
     	
     	//finalize some variables and close out
