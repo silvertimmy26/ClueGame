@@ -67,7 +67,6 @@ public class Board {
 					continue;
 				}
 				
-				
 				if (i - 1 >= 0) {
 					
 					// if space above is not a room and not unused
@@ -80,22 +79,26 @@ public class Board {
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i-1][j]);
 						} else {	
+							BoardCell roomToLeftCenter = roomMap.get(grid[i][j-1].getInitial()).getCenterCell();
+							BoardCell roomToRightCenter = roomMap.get(grid[i][j+1].getInitial()).getCenterCell();
+							BoardCell roomAboveCenter = roomMap.get(grid[i-1][j].getInitial()).getCenterCell();
+							BoardCell roomBelowCenter = roomMap.get(grid[i+1][j].getInitial()).getCenterCell();
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT: 	// if the door points left, add the room to the left's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToLeftCenter);
+									roomToLeftCenter.addAdj(current);
 									break;
 								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToRightCenter);
+									roomToRightCenter.addAdj(current);
 									break;
 								case UP:	// if the door points left, add the above room's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomAboveCenter);
+									roomAboveCenter.addAdj(current);
 									break;
 								case DOWN:	// if the door points left, add the room below's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomBelowCenter);
+									roomBelowCenter.addAdj(current);
 									break;
 							}		
 						}
@@ -112,22 +115,26 @@ public class Board {
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i+1][j]);
 						} else {
+							BoardCell roomToLeftCenter = roomMap.get(grid[i][j-1].getInitial()).getCenterCell();
+							BoardCell roomToRightCenter = roomMap.get(grid[i][j+1].getInitial()).getCenterCell();
+							BoardCell roomAboveCenter = roomMap.get(grid[i-1][j].getInitial()).getCenterCell();
+							BoardCell roomBelowCenter = roomMap.get(grid[i+1][j].getInitial()).getCenterCell();
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:	// if the door points left, add the room to the left's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToLeftCenter);
+									roomToLeftCenter.addAdj(current);
 									break;
 								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToRightCenter);
+									roomToRightCenter.addAdj(current);
 									break;
 								case UP:	// if the door points left, add the above room's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomAboveCenter);
+									roomAboveCenter.addAdj(current);
 									break;
 								case DOWN:	// if the door points left, add the room below's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomBelowCenter);
+									roomBelowCenter.addAdj(current);
 									break;
 							}		
 						}
@@ -144,22 +151,26 @@ public class Board {
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i][j - 1]);
 						} else {	
+							BoardCell roomToLeftCenter = roomMap.get(grid[i][j-1].getInitial()).getCenterCell();
+							BoardCell roomToRightCenter = roomMap.get(grid[i][j+1].getInitial()).getCenterCell();
+							BoardCell roomAboveCenter = roomMap.get(grid[i-1][j].getInitial()).getCenterCell();
+							BoardCell roomBelowCenter = roomMap.get(grid[i+1][j].getInitial()).getCenterCell();
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:	// if the door points left, add the room to the left's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToLeftCenter);
+									roomToLeftCenter.addAdj(current);
 									break;
 								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToRightCenter);
+									roomToRightCenter.addAdj(current);
 									break;
 								case UP:	// if the door points left, add the above room's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomAboveCenter);
+									roomAboveCenter.addAdj(current);
 									break;
 								case DOWN:	// if the door points left, add the room below's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomBelowCenter);
+									roomBelowCenter.addAdj(current);
 									break;
 							}		
 						}
@@ -176,22 +187,26 @@ public class Board {
 						if (grid[i][j].getDoorDirection() == DoorDirection.NONE) {
 							//current.addAdj(grid[i][j + 1]);
 						} else {	
+							BoardCell roomToLeftCenter = roomMap.get(grid[i][j-1].getInitial()).getCenterCell();
+							BoardCell roomToRightCenter = roomMap.get(grid[i][j+1].getInitial()).getCenterCell();
+							BoardCell roomAboveCenter = roomMap.get(grid[i-1][j].getInitial()).getCenterCell();
+							BoardCell roomBelowCenter = roomMap.get(grid[i+1][j].getInitial()).getCenterCell();
 							switch(grid[i][j].getDoorDirection()) {
 								case LEFT:	// if the door points left, add the room to the left's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j-1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j-1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToLeftCenter);
+									roomToLeftCenter.addAdj(current);
 									break;
 								case RIGHT:	// if the door points right, add the room to the right's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i][j+1].getInitial()).getCenterCell());
-									roomMap.get(grid[i][j+1].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomToRightCenter);
+									roomToRightCenter.addAdj(current);
 									break;
 								case UP:	// if the door points left, add the above room's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i-1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i-1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomAboveCenter);
+									roomAboveCenter.addAdj(current);
 									break;
 								case DOWN:	// if the door points left, add the room below's center cell to adjacency
-									current.addAdj(roomMap.get(grid[i+1][j].getInitial()).getCenterCell());
-									roomMap.get(grid[i+1][j].getInitial()).getCenterCell().addAdj(current);
+									current.addAdj(roomBelowCenter);
+									roomBelowCenter.addAdj(current);
 									break;
 							}		
 						}
