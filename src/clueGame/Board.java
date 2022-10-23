@@ -413,6 +413,7 @@ public class Board {
 			if(visited.contains(t)) {
 				continue;
 			}
+			// If it's occupied or is not a room, go to the next BoardCell t
 			if(t.isOccupied() && !(t.getIsRoom())) {
 				continue;
 			}
@@ -421,12 +422,12 @@ public class Board {
 			visited.add(t); // move before loop and add start cell
 			
 			//Go through looking if cell should actually be added, or if we call recursive again
-			if(t.getIsRoom()) {
+			if(t.getIsRoom()) {	// If it's a room, add t to targets and remove the start cell
 				targets.add(t);
 				targets.remove(startCell);
-			} else if(pathLength==1) {
+			} else if(pathLength==1) {	// else and if the pathLength is 1, only add t to targets
 				targets.add(t);
-			} else {
+			} else {					// otherwise, do a recursive call to calculateTargets with pathLength minus one
 				calculateTargets(t,pathLength-1);
 			}
 			
