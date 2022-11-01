@@ -11,6 +11,14 @@ public abstract class Player {
 	private int column;
 	private Set<Card> hand;
 	
+	public Player(String name, String color, int row, int column) {
+		super();
+		this.name = name;
+		this.color = color;
+		this.row = row;
+		this.column = column;
+	}
+
 	public abstract void updateHand(Card card);
 
 	public int getRow() {

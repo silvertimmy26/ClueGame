@@ -225,6 +225,8 @@ public class Board {
     	//Establishes our scanner for reading the file in
     	File setup=new File(setupConfigFile);
     	Scanner myScanner= new Scanner(setup);
+    	ArrayList<String> peopleNames = new ArrayList<String>(); 
+    	ArrayList<String> peopleColors = new ArrayList<String>(); 
     	
     	//Goes through every line in the setup file
     	while(myScanner.hasNext()) {
@@ -236,18 +238,31 @@ public class Board {
     		//Lines that are rooms or walkways/unused are here
     		else{
     			//Split line into components
-    			String[] roomInfo=temp.split(", ");
+    			String[] gameInfo=temp.split(", ");
     			//Check to make sure that the files are in the correct form, and if so, create a new room
-    			if(roomInfo[0].contains("Room")||roomInfo[0].contains("Space")) {
-    				Room tempRoom= new Room(roomInfo[1]);
+    			if(gameInfo[0].contains("Room")||gameInfo[0].contains("Space")) {
+    				Room tempRoom= new Room(gameInfo[1]);
     				//If there is more than 1 character for the room/space, throw an error
-    				if(roomInfo[2].length()>1) {
+    				if(gameInfo[2].length()>1) {
     					throw new BadConfigFormatException("Error: More than one letter for room symbol");
     				}
-    				char tempChar= roomInfo[2].charAt(0);
-    				
+    				char tempChar= gameInfo[2].charAt(0);
     				//Add to our temp map
     				tempMap.put(tempChar, tempRoom);
+    				
+    				if (gameInfo[0].contains("Room")) {
+    					Card tempCard = new Card(gameInfo[1], CardType.ROOM);
+    					deck.add(tempCard);
+    				}
+    				
+    			} else if (gameInfo[0].contains("Person")) {
+    				peopleNames.add(gameInfo[1]);
+    				Card tempCard = new Card(gameInfo[1], CardType.PERSON);
+    				peopleColors.add(gameInfo[2]);
+    				deck.add(tempCard);
+    			} else if (gameInfo[0].contains("Weapon")) {
+    				Card tempCard = new Card(gameInfo[1], CardType.WEAPON);
+    				deck.add(tempCard);
     			}
     			
     			//throw an error in the case of extra lines in file
@@ -259,6 +274,18 @@ public class Board {
     	//Set up our room map and close the scanner
     	roomMap=tempMap;
     	myScanner.close();
+    	HumanPlayer p0 = new HumanPlayer(peopleNames.get(0), peopleColors.get(0), 5, 0);
+    	ComputerPlayer p1 = new ComputerPlayer(peopleNames.get(1), peopleColors.get(1), 18, 0);
+    	ComputerPlayer p2 = new ComputerPlayer(peopleNames.get(2), peopleColors.get(2), 24, 9);
+    	ComputerPlayer p3 = new ComputerPlayer(peopleNames.get(3), peopleColors.get(3), 24, 14);
+    	ComputerPlayer p4 = new ComputerPlayer(peopleNames.get(4), peopleColors.get(4), 17, 23);
+    	ComputerPlayer p5 = new ComputerPlayer(peopleNames.get(5), peopleColors.get(5), 0, 16);
+    	players.add(p0);
+    	players.add(p1);
+    	players.add(p2);
+    	players.add(p3);
+    	players.add(p4);
+    	players.add(p5);
     	return;
     }
     
@@ -445,6 +472,8 @@ public class Board {
 			visited.remove(t); // move down a loop
 		}
 	}
+	
+	
 	
 	public void deal() {
 		//TODO
