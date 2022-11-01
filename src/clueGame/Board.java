@@ -24,6 +24,9 @@ public class Board {
 	private String setupConfigFile;
 	private int doorNum=0;
 	private Map<Character, Room> roomMap = new HashMap<Character, Room>();
+	private Set<Card> deck = new HashSet<Card>();
+	private Solution theAnswer;
+	private ArrayList<Player> players = new ArrayList<Player>();
 	
     // variable and methods used for singleton pattern
     private static Board theInstance = new Board();
@@ -442,7 +445,11 @@ public class Board {
 			visited.remove(t); // move down a loop
 		}
 	}
-
+	
+	public void deal() {
+		//TODO
+	}
+	
 	public void setConfigFiles(String layout, String setup) {
 		layoutConfigFile=layout;
 		setupConfigFile=setup;
@@ -484,6 +491,18 @@ public class Board {
 
 	public int getDoorNum() {
 		return doorNum;
+	}
+
+	public Set<Card> getDeck() {
+		return deck;
+	}
+
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public Solution getTheAnswer() {
+		return theAnswer;
 	}
 	
 }
