@@ -31,7 +31,7 @@ public class Board {
 	private ArrayList<Card> roomCards = new ArrayList<Card>(); 
 	private ArrayList<Card> peopleCards = new ArrayList<Card>(); 
 	private ArrayList<Card> weaponCards = new ArrayList<Card>(); 
-	private Solution theAnswer = new Solution();
+	private Solution theAnswer;
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
     // variable and methods used for singleton pattern
@@ -517,11 +517,7 @@ public class Board {
 		weaponRand = weaponRand % weaponCards.size();
 		
 		//Set up a solution
-		Solution tempSolution = new Solution();
-		tempSolution.setRoom(roomCards.get(roomRand));
-		tempSolution.setPerson(peopleCards.get(peopleRand));
-		tempSolution.setWeapon(weaponCards.get(weaponRand));
-		theAnswer = tempSolution;
+		theAnswer = new Solution(roomCards.get(roomRand),peopleCards.get(peopleRand), weaponCards.get(weaponRand));
 		
 		//Remove our solution cars prior to passing cards out
 		allCards.remove(roomCards.get(roomRand));
@@ -547,6 +543,16 @@ public class Board {
 				currentPerson++;
 			}
 		}
+	}
+	
+	public boolean checkAccusation(Solution accusation) {
+		
+		return false;
+	}
+	
+	public Card handleSuggestion(Solution suggestion, int playerArrayLocation) {
+		Card temp=new Card("Temp",CardType.PERSON);
+		return temp;
 	}
 	
 	public void setConfigFiles(String layout, String setup) {
@@ -603,5 +609,19 @@ public class Board {
 	public Solution getTheAnswer() {
 		return theAnswer;
 	}
+
+	public void setDeck(Set<Card> deck) {
+		this.deck = deck;
+	}
+
+	public void setTheAnswer(Solution theAnswer) {
+		this.theAnswer = theAnswer;
+	}
+
+	public void setPlayers(ArrayList<Player> players) {
+		this.players = players;
+	}
+
+	
 	
 }

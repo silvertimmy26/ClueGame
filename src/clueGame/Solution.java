@@ -6,6 +6,16 @@ public class Solution {
 	private Card person;
 	private Card weapon;
 	
+	public Solution() {
+		
+	}
+	
+	public Solution(Card room, Card person, Card weapon) {
+		super();
+		this.room = room;
+		this.person = person;
+		this.weapon = weapon;
+	}
 	public Card getRoom() {
 		return room;
 	}

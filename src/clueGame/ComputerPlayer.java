@@ -16,5 +16,15 @@ public class ComputerPlayer extends Player {
 		tempHand.add(card);
 		this.setHand(tempHand);
 	}
+	
+	public Solution createSuggestion(Room currentRoom) {
+		Solution temp=new Solution();
+		return temp;
+	}
+	
+	public BoardCell selectTarget(Set<BoardCell> targets) {
+		BoardCell temp=new BoardCell(1,1,'c',DoorDirection.DOWN);
+		return temp;
+	}
 
 }
