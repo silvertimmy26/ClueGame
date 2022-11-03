@@ -149,7 +149,6 @@ import clueGame.BoardCell;
 		public void testTargetsAtDoor() {
 			// test a roll of 1, at door
 			board.calcTargets(board.getCell(8, 17), 1);
-			System.out.println();
 			Set<BoardCell> targets= board.getTargets();
 			assertEquals(4, targets.size());
 			assertTrue(targets.contains(board.getCell(12, 20)));

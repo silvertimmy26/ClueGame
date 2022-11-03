@@ -1,5 +1,7 @@
 package clueGame;
 
+import java.util.Set;
+
 public class HumanPlayer extends Player {
 
 	public HumanPlayer(String name, String color, int row, int column) {
@@ -8,8 +10,9 @@ public class HumanPlayer extends Player {
 	
 	@Override
 	public void updateHand(Card card) {
-		// TODO Auto-generated method stub
-		
+		Set<Card> tempHand = this.getHand();
+		tempHand.add(card);
+		this.setHand(tempHand);
 	}
 
 }

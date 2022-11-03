@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import clueGame.Board;
@@ -27,6 +28,7 @@ class GameSetupTests {
 		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
 		// Initialize will load BOTH config files
 		board.initialize();
+		board.deal();
 	}
 	
 	@Test
@@ -88,7 +90,7 @@ class GameSetupTests {
 		assertEquals(testPlayers.get(0).getName(), "Sheriff Silly");
 		assertEquals(testPlayers.get(0).getColor(), "Blue");
 		assertEquals(testPlayers.get(2).getName(), "Snoop Horse");
-		assertEquals(testPlayers.get(0).getColor(), "Green");
+		assertEquals(testPlayers.get(2).getColor(), "Green");
 		
 		boolean fairDeal = true;
 		for (Player p: testPlayers) {

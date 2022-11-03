@@ -4,12 +4,15 @@ import clueGame.BadConfigFormatException;
 import clueGame.DoorDirection;
 import experiment.TestBoardCell;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -20,12 +23,15 @@ public class Board {
 	private int numColumns;
 	private Set<BoardCell> targets;
 	private Set<BoardCell> visited;
-	private String layoutConfigFile;
-	private String setupConfigFile;
+	private String layoutConfigFile = new String();
+	private String setupConfigFile = new String();
 	private int doorNum=0;
 	private Map<Character, Room> roomMap = new HashMap<Character, Room>();
 	private Set<Card> deck = new HashSet<Card>();
-	private Solution theAnswer;
+	private ArrayList<Card> roomCards = new ArrayList<Card>(); 
+	private ArrayList<Card> peopleCards = new ArrayList<Card>(); 
+	private ArrayList<Card> weaponCards = new ArrayList<Card>(); 
+	private Solution theAnswer = new Solution();
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
     // variable and methods used for singleton pattern
@@ -43,6 +49,7 @@ public class Board {
     
     //initialize the board (since we are using singleton pattern)
     public void initialize() {
+    	
     	//goes through the setup file
     	try {
     		loadSetupConfig();
@@ -56,6 +63,7 @@ public class Board {
     	}catch(Exception e) {
     		e.getMessage(); // syso
     	}
+    	
     	
 		for(int i=0; i<numRows; i++) {
 			for(int j=0; j<numColumns; j++) {   	
@@ -227,7 +235,9 @@ public class Board {
     	Scanner myScanner= new Scanner(setup);
     	ArrayList<String> peopleNames = new ArrayList<String>(); 
     	ArrayList<String> peopleColors = new ArrayList<String>(); 
-    	
+    	ArrayList<Point> startingPoints =  new ArrayList<Point>();
+    	deck = new HashSet<Card>();
+
     	//Goes through every line in the setup file
     	while(myScanner.hasNext()) {
     		String temp=myScanner.nextLine();
@@ -253,16 +263,23 @@ public class Board {
     				if (gameInfo[0].contains("Room")) {
     					Card tempCard = new Card(gameInfo[1], CardType.ROOM);
     					deck.add(tempCard);
+    					roomCards.add(tempCard);
     				}
     				
     			} else if (gameInfo[0].contains("Person")) {
     				peopleNames.add(gameInfo[1]);
     				Card tempCard = new Card(gameInfo[1], CardType.PERSON);
     				peopleColors.add(gameInfo[2]);
+    				Point tempPoint = new Point();
+    				tempPoint.x = Integer.parseInt(gameInfo[3]);
+    				tempPoint.y = Integer.parseInt(gameInfo[4]);
+    				startingPoints.add(tempPoint);
     				deck.add(tempCard);
+    				peopleCards.add(tempCard);
     			} else if (gameInfo[0].contains("Weapon")) {
     				Card tempCard = new Card(gameInfo[1], CardType.WEAPON);
     				deck.add(tempCard);
+    				weaponCards.add(tempCard);
     			}
     			
     			//throw an error in the case of extra lines in file
@@ -274,18 +291,15 @@ public class Board {
     	//Set up our room map and close the scanner
     	roomMap=tempMap;
     	myScanner.close();
-    	HumanPlayer p0 = new HumanPlayer(peopleNames.get(0), peopleColors.get(0), 5, 0);
-    	ComputerPlayer p1 = new ComputerPlayer(peopleNames.get(1), peopleColors.get(1), 18, 0);
-    	ComputerPlayer p2 = new ComputerPlayer(peopleNames.get(2), peopleColors.get(2), 24, 9);
-    	ComputerPlayer p3 = new ComputerPlayer(peopleNames.get(3), peopleColors.get(3), 24, 14);
-    	ComputerPlayer p4 = new ComputerPlayer(peopleNames.get(4), peopleColors.get(4), 17, 23);
-    	ComputerPlayer p5 = new ComputerPlayer(peopleNames.get(5), peopleColors.get(5), 0, 16);
-    	players.add(p0);
-    	players.add(p1);
-    	players.add(p2);
-    	players.add(p3);
-    	players.add(p4);
-    	players.add(p5);
+    	for (int i = 0; i < peopleNames.size(); i++) {
+    		Player p0;
+    		if (i == 0) {
+    			p0 = new HumanPlayer(peopleNames.get(0), peopleColors.get(0), startingPoints.get(0).x, startingPoints.get(0).y);
+    		} else {
+    			p0 = new ComputerPlayer(peopleNames.get(i), peopleColors.get(i), startingPoints.get(i).x, startingPoints.get(i).y);
+    		}
+    		players.add(p0);
+    	}
     	return;
     }
     
@@ -476,7 +490,37 @@ public class Board {
 	
 	
 	public void deal() {
-		//TODO
+		Set<Card> allCards = new HashSet<Card>();
+		allCards.addAll(deck);
+		Random rand = new Random();
+		int roomRand = rand.nextInt(10000);
+		roomRand = roomRand % roomCards.size();
+		int peopleRand = rand.nextInt(10000);
+		peopleRand = peopleRand % peopleCards.size();
+		int weaponRand = rand.nextInt(10000);
+		weaponRand = weaponRand % weaponCards.size();
+		Solution tempSolution = new Solution();
+		tempSolution.setRoom(roomCards.get(roomRand));
+		tempSolution.setPerson(peopleCards.get(peopleRand));
+		tempSolution.setWeapon(weaponCards.get(weaponRand));
+		theAnswer = tempSolution;
+		allCards.remove(roomCards.get(roomRand));
+		allCards.remove(peopleCards.get(peopleRand));
+		allCards.remove(weaponCards.get(weaponRand));
+		int currentPerson = 0;
+		int cardDealRand;
+		ArrayList<Card> allCardsCopy = new ArrayList<Card>(allCards);
+		while (allCardsCopy.size() > 0) {
+			cardDealRand = rand.nextInt(10000);
+			cardDealRand = cardDealRand % allCardsCopy.size();
+			players.get(currentPerson).updateHand(allCardsCopy.get(cardDealRand));
+			allCardsCopy.remove(cardDealRand);
+			if (currentPerson == 5) {
+				currentPerson = 0;
+			} else {
+				currentPerson++;
+			}
+		}
 	}
 	
 	public void setConfigFiles(String layout, String setup) {

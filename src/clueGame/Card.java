@@ -13,7 +13,17 @@ public class Card {
 	}
 	
 	public boolean equals(Card target) {
-		return false;
+		return (target.getCardName().equals(this.getCardName()));
 	}
+
+	public String getCardName() {
+		return cardName;
+	}
+
+	public CardType getType() {
+		return type;
+	}
+	
+	
 	
 }
