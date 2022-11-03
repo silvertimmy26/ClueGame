@@ -236,6 +236,7 @@ public class Board {
     	ArrayList<String> peopleNames = new ArrayList<String>(); 
     	ArrayList<String> peopleColors = new ArrayList<String>(); 
     	ArrayList<Point> startingPoints =  new ArrayList<Point>();
+    	//Set up deck to be new every time
     	deck = new HashSet<Card>();
 
     	//Goes through every line in the setup file
@@ -261,22 +262,32 @@ public class Board {
     				tempMap.put(tempChar, tempRoom);
     				
     				if (gameInfo[0].contains("Room")) {
+    					//Make card if it is a room
     					Card tempCard = new Card(gameInfo[1], CardType.ROOM);
     					deck.add(tempCard);
     					roomCards.add(tempCard);
     				}
     				
     			} else if (gameInfo[0].contains("Person")) {
+    				//Make cards for people
+    				
+    				//Add name to array list
     				peopleNames.add(gameInfo[1]);
+    				//Create new temp card
     				Card tempCard = new Card(gameInfo[1], CardType.PERSON);
+    				//Add color to array list
     				peopleColors.add(gameInfo[2]);
+    				//Create a new point for starting location
     				Point tempPoint = new Point();
     				tempPoint.x = Integer.parseInt(gameInfo[3]);
     				tempPoint.y = Integer.parseInt(gameInfo[4]);
+    				//Add point to array list
     				startingPoints.add(tempPoint);
+    				//Add our temp card to actual deck
     				deck.add(tempCard);
     				peopleCards.add(tempCard);
     			} else if (gameInfo[0].contains("Weapon")) {
+    				//Create card for weapons
     				Card tempCard = new Card(gameInfo[1], CardType.WEAPON);
     				deck.add(tempCard);
     				weaponCards.add(tempCard);
@@ -291,6 +302,7 @@ public class Board {
     	//Set up our room map and close the scanner
     	roomMap=tempMap;
     	myScanner.close();
+    	//Create all of our players
     	for (int i = 0; i < peopleNames.size(); i++) {
     		Player p0;
     		if (i == 0) {
@@ -298,6 +310,7 @@ public class Board {
     		} else {
     			p0 = new ComputerPlayer(peopleNames.get(i), peopleColors.get(i), startingPoints.get(i).x, startingPoints.get(i).y);
     		}
+    		//Add player to player list
     		players.add(p0);
     	}
     	return;
@@ -490,8 +503,11 @@ public class Board {
 	
 	
 	public void deal() {
+		//Create copy of deck for moving cards
 		Set<Card> allCards = new HashSet<Card>();
 		allCards.addAll(deck);
+		
+		//Create random numbers for indexes
 		Random rand = new Random();
 		int roomRand = rand.nextInt(10000);
 		roomRand = roomRand % roomCards.size();
@@ -499,22 +515,32 @@ public class Board {
 		peopleRand = peopleRand % peopleCards.size();
 		int weaponRand = rand.nextInt(10000);
 		weaponRand = weaponRand % weaponCards.size();
+		
+		//Set up a solution
 		Solution tempSolution = new Solution();
 		tempSolution.setRoom(roomCards.get(roomRand));
 		tempSolution.setPerson(peopleCards.get(peopleRand));
 		tempSolution.setWeapon(weaponCards.get(weaponRand));
 		theAnswer = tempSolution;
+		
+		//Remove our solution cars prior to passing cards out
 		allCards.remove(roomCards.get(roomRand));
 		allCards.remove(peopleCards.get(peopleRand));
 		allCards.remove(weaponCards.get(weaponRand));
+		
+		//Set up variables for while looping to deal out cards
 		int currentPerson = 0;
 		int cardDealRand;
 		ArrayList<Card> allCardsCopy = new ArrayList<Card>(allCards);
+		
+		//While loop for dealing
 		while (allCardsCopy.size() > 0) {
 			cardDealRand = rand.nextInt(10000);
 			cardDealRand = cardDealRand % allCardsCopy.size();
 			players.get(currentPerson).updateHand(allCardsCopy.get(cardDealRand));
 			allCardsCopy.remove(cardDealRand);
+			
+			//Iterate along players
 			if (currentPerson == 5) {
 				currentPerson = 0;
 			} else {
