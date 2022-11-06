@@ -16,7 +16,9 @@ public class BoardCell {
 	private boolean isOccupied=false;
 	private Set<BoardCell> adjList = new HashSet<BoardCell>();
 	
-	
+	public BoardCell() {
+		
+	}
 	
 	public BoardCell(int row, int col, char initial, DoorDirection doorDirection) {
 		super();

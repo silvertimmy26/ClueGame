@@ -22,7 +22,7 @@ public class ComputerPlayer extends Player {
 		return temp;
 	}
 	
-	public BoardCell selectTarget(Set<BoardCell> targets) {
+	public BoardCell selectTarget(int diceRoll) {
 		BoardCell temp=new BoardCell(1,1,'c',DoorDirection.DOWN);
 		return temp;
 	}

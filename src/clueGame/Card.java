@@ -13,7 +13,8 @@ public class Card {
 	}
 	
 	public boolean equals(Card target) {
-		return (target.getCardName().equals(this.getCardName()));
+		Card targetTemp=new Card("name",CardType.ROOM);
+		return (targetTemp.getCardName().equals(this.getCardName()));
 	}
 
 	public String getCardName() {
