@@ -115,6 +115,7 @@ class GameSetupTests {
 				roomExists = true;
 			}
 		}
+		
 		assertTrue(roomExists);
 		assertTrue(weaponExists);
 		assertTrue(personExists);

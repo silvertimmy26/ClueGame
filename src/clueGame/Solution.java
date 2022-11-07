@@ -2,9 +2,9 @@ package clueGame;
 
 public class Solution {
 	
-	private Card room;
-	private Card person;
-	private Card weapon;
+	private Card room= new Card();
+	private Card person= new Card();
+	private Card weapon=new Card();
 	
 	public Solution() {
 		

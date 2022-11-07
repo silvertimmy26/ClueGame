@@ -2,6 +2,9 @@ package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -54,6 +57,7 @@ class ComputerAITest {
 	@Test
 	public void creatingSuggestions() {
 		ComputerPlayer temp= new ComputerPlayer("Sheriff Silly", "Blue", 2,2);
+		temp.setTheDeck(board.getDeck());
 		Solution tempSuggestion=new Solution();
 		temp.addToSeen(lassoCard);
 		temp.addToSeen(knifeCard);
@@ -66,7 +70,9 @@ class ComputerAITest {
 		temp.addToSeen(cedricCard);
 		temp.addToSeen(margaretCard);
 		
+		
 		tempSuggestion=temp.createSuggestion(board.getRoom(board.getCell(temp.getRow(), temp.getColumn())));
+		
 		assertTrue(jailCard.equals(tempSuggestion.getRoom()));
 		assertTrue(steelCard.equals(tempSuggestion.getWeapon()));
 		assertTrue(mamaCard.equals(tempSuggestion.getPerson()));
@@ -97,20 +103,28 @@ class ComputerAITest {
 	public void aiTargetTests() {
 		ComputerPlayer temp=new ComputerPlayer("Matthew","Blue", 7,19);
 		BoardCell targetCell=new BoardCell();
-		targetCell=temp.selectTarget(1);
+		Set<BoardCell> theTargets=new HashSet<BoardCell>();
+		board.calcTargets(board.getCell(7, 19), 1);
+		theTargets=board.getTargets();
+		
+		targetCell=temp.selectTarget(theTargets);
 		
 		assertTrue(targetCell==board.getCell(7, 18) || targetCell==board.getCell(7, 20) ||targetCell==board.getCell(6, 19)||targetCell==board.getCell(8, 19));
 		
 		temp.setRow(5);
 		temp.setColumn(17);
-		targetCell=temp.selectTarget(1);
+		board.calcTargets(board.getCell(5, 17), 1);
+		theTargets=board.getTargets();
+		targetCell=temp.selectTarget(theTargets);
 		
 		assertTrue(targetCell==board.getCell(2, 19));
 		
 		temp.addToSeen(officeCard);
 		temp.setRow(4);
 		temp.setColumn(14);
-		targetCell=temp.selectTarget(1);
+		board.calcTargets(board.getCell(4, 14), 1);
+		theTargets=board.getTargets();
+		targetCell=temp.selectTarget(theTargets);
 		assertTrue(targetCell==board.getCell(4,12)|| targetCell==board.getCell(3, 14)||targetCell==board.getCell(4, 15));
 		
 	}

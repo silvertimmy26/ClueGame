@@ -41,12 +41,14 @@ class GameSolutionTest {
 		saloonCard=new Card("Saloon", CardType.ROOM);
 		bankCard=new Card("Bank", CardType.ROOM);
 		
+		
 	}
 	
 	
 	@Test
 	public void accusationCheck() {
 		Solution temp=new Solution(jailCard, sheriffCard, knifeCard);
+		board.setTheAnswer(temp);
 		assertTrue(board.checkAccusation(new Solution(jailCard, sheriffCard, knifeCard)));
 		
 		assertFalse(board.checkAccusation(new Solution(saloonCard, sheriffCard, knifeCard)));
@@ -64,6 +66,7 @@ class GameSolutionTest {
 		banditHand.add(banditCard);
 		bandit.setHand(banditHand);
 		
+		
 		assertTrue(jailCard.equals(bandit.disproveSuggestion(temp)));
 		
 		banditHand.add(sheriffCard);
@@ -79,10 +82,16 @@ class GameSolutionTest {
 		ComputerPlayer bandit= new ComputerPlayer("Bandit The Kid", "Red", 18, 0);
 		HumanPlayer sheriff= new HumanPlayer("Sheriff Silly", "Blue", 5, 0);
 		ComputerPlayer snoop= new ComputerPlayer("Snoop Horse", "Green", 24, 9);
+		ComputerPlayer temp1=new ComputerPlayer("temp","Blue", 18,1);
+		ComputerPlayer temp2=new ComputerPlayer("temp", "Blue", 18,2);
+		ComputerPlayer temp3=new ComputerPlayer("temp","Red",18,3);
 		ArrayList <Player> temp= new ArrayList<Player>();
 		temp.add(bandit);
 		temp.add(sheriff);
 		temp.add(snoop);
+		temp.add(temp1);
+		temp.add(temp2);
+		temp.add(temp3);
 		Set<Card> banditHand=new HashSet<Card>();
 		Set<Card> sheriffHand=new HashSet<Card>();
 		sheriffHand.add(banditCard);

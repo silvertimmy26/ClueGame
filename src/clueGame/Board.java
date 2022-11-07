@@ -31,7 +31,7 @@ public class Board {
 	private ArrayList<Card> roomCards = new ArrayList<Card>(); 
 	private ArrayList<Card> peopleCards = new ArrayList<Card>(); 
 	private ArrayList<Card> weaponCards = new ArrayList<Card>(); 
-	private Solution theAnswer;
+	private Solution theAnswer=new Solution();
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
     // variable and methods used for singleton pattern
@@ -238,6 +238,10 @@ public class Board {
     	ArrayList<Point> startingPoints =  new ArrayList<Point>();
     	//Set up deck to be new every time
     	deck = new HashSet<Card>();
+    	roomCards=new ArrayList<Card>();
+    	weaponCards=new ArrayList<Card>();
+    	peopleCards=new ArrayList<Card>();
+    	players=new ArrayList<Player>();
 
     	//Goes through every line in the setup file
     	while(myScanner.hasNext()) {
@@ -299,6 +303,7 @@ public class Board {
     			}
     		}
     	}
+    	
     	//Set up our room map and close the scanner
     	roomMap=tempMap;
     	myScanner.close();
@@ -313,6 +318,12 @@ public class Board {
     		//Add player to player list
     		players.add(p0);
     	}
+    	
+    	//Add a version of the deck to each player
+    	for (Player p:players) {
+    		p.setTheDeck(deck);
+    	}
+    	
     	return;
     }
     
@@ -398,6 +409,7 @@ public class Board {
     						currCell.setRoomCenter(true);						
     						roomMap.get(currCellInitial).setCenterCell(currCell);
     						currCell.setIsRoom(true);
+    						currCell.setRoomName(roomMap.get(currSpot.charAt(0)).getName());
     						break;
     					case '#':
     						currCell.setRoomLabel(true);
@@ -423,9 +435,6 @@ public class Board {
     						//Default check for secret passage, and looks to make sure location is apart of the board
     						if(roomMap.containsKey(currSpot.charAt(1))) {
     							currCell.setSecretPassage(currSpot.charAt(1));
-    							//System.out.println(currSpot.charAt(1));
-    							//roomMap.get(currSpot.charAt(0)).getCenterCell().setSecretPassage(currSpot.charAt(1));
-    							//System.out.println("hi");
     							secretRoomCells.add(currSpot);
     						}
     						else {
@@ -504,6 +513,8 @@ public class Board {
 	
 	public void deal() {
 		//Create copy of deck for moving cards
+		
+		theAnswer=new Solution();
 		Set<Card> allCards = new HashSet<Card>();
 		allCards.addAll(deck);
 		
@@ -546,13 +557,41 @@ public class Board {
 	}
 	
 	public boolean checkAccusation(Solution accusation) {
-		
+		//Check to see if all parts of accusation match our answer
+		if(accusation.getRoom().equals(this.getTheAnswer().getRoom())
+			&& accusation.getPerson().equals(this.getTheAnswer().getPerson())
+			&& accusation.getWeapon().equals(this.getTheAnswer().getWeapon())) {
+			return true;
+		}
+		//If not all parts match, set to false
 		return false;
 	}
 	
 	public Card handleSuggestion(Solution suggestion, int playerArrayLocation) {
-		Card temp=new Card("Temp",CardType.PERSON);
-		return temp;
+		//Set up variables for while loop
+		int stopIndex=0;
+		int playerLookAt=playerArrayLocation+1;
+		if(playerLookAt==6) {
+			playerLookAt=0;
+		}
+		
+		//While loop to go through each player to see if their cards can disprove other people
+		while(stopIndex<5) {
+			Card temp=new Card();
+			temp=players.get(playerLookAt).disproveSuggestion(suggestion);
+			//Return if there is a card that can disprove
+			if (temp !=null) {
+				return temp;
+			}
+			//Increment variables
+			stopIndex++;
+			playerLookAt++;
+			if(playerLookAt==6) {
+				playerLookAt=0;
+			}
+		}
+		//If no card found, return null
+		return null;
 	}
 	
 	public void setConfigFiles(String layout, String setup) {

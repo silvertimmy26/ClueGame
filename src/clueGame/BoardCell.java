@@ -15,6 +15,7 @@ public class BoardCell {
 	private boolean isRoom=false;
 	private boolean isOccupied=false;
 	private Set<BoardCell> adjList = new HashSet<BoardCell>();
+	private String roomName;
 	
 	public BoardCell() {
 		
@@ -107,6 +108,14 @@ public class BoardCell {
 
 	public void setInitial(char initial) {
 		this.initial = initial;
+	}
+
+	public String getRoomName() {
+		return roomName;
+	}
+
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
 	}
 	
 	

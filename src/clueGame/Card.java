@@ -12,9 +12,18 @@ public class Card {
 		this.type = type;
 	}
 	
+	public Card() {
+		
+	}
+	
+	//Check if cars are equal
 	public boolean equals(Card target) {
-		Card targetTemp=new Card("name",CardType.ROOM);
-		return (targetTemp.getCardName().equals(this.getCardName()));
+		//If name and type are the same, return true
+		if(this.getCardName().equals(target.getCardName())&& this.getType()==target.getType()) {
+			return true;
+		}
+		//If name/type don't match, return false
+		return false;
 	}
 
 	public String getCardName() {

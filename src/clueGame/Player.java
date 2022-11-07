@@ -13,6 +13,7 @@ public abstract class Player {
 	private int column;
 	private Set<Card> hand = new HashSet<Card>();
 	private ArrayList<Card> seenCards= new ArrayList<Card>();
+	private Set<Card>theDeck=new HashSet<Card>();
 	
 	public Player(String name, String color, int row, int column) {
 		super();
@@ -22,15 +23,25 @@ public abstract class Player {
 		this.column = column;
 	}
 
+	//Set up update hand to be called by children
 	public abstract void updateHand(Card card);
 	
-	public void updateSeen(Card seenCard) {
-		//seenCards.add(seenCard);
-	}
 	
 	public Card disproveSuggestion(Solution suggestion) {
-		Card temp=new Card("temp",CardType.PERSON);
-		return temp;
+		//go through hand to see if there is any card that can disprove the suggestion
+		for(Card c: hand) {
+			if (c.equals(suggestion.getRoom())) {
+				return c;
+			}
+			else if(c.equals(suggestion.getPerson())) {
+				return c;
+			}
+			else if (c.equals(suggestion.getWeapon())) {
+				return c;
+			}
+		}
+		//If no matching card is found, return null
+		return null;
 	}
 
 	public int getRow() {
@@ -67,6 +78,18 @@ public abstract class Player {
 	
 	public void addToSeen(Card seen) {
 		seenCards.add(seen);
+	}
+
+	public Set<Card> getTheDeck() {
+		return theDeck;
+	}
+
+	public void setTheDeck(Set<Card> theDeck) {
+		this.theDeck = theDeck;
+	}
+
+	public ArrayList<Card> getSeenCards() {
+		return seenCards;
 	}
 	
 	
