@@ -95,6 +95,7 @@ public class GameControlPanel extends JPanel {
 	public void setTurn(Player player, int diceRoll) {
 		currentRoll.setText(Integer.toString(diceRoll));
 		currentPlayer.setText(player.getName());
+		// get color from setup file
 		Color color;
 		try {
 		    Field field = Color.class.getField(player.getColor());
