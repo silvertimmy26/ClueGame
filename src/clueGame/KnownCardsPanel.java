@@ -29,6 +29,7 @@ public class KnownCardsPanel extends JPanel {
 		add(peoplePanel);
 		add(roomPanel);
 		add(weaponPanel);
+		setBorder(new TitledBorder (new EtchedBorder(), "Known Cards"));
 	}
 	
 	public JPanel updatePanel(Player player, CardType type) {

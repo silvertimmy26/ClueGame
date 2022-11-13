@@ -1,6 +1,8 @@
 package clueGame;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +46,26 @@ public abstract class Player {
 		return null;
 	}
 
+	public void draw(Graphics g, int cellWidth, int cellHeight) {
+		//Method to draw each player as an 'oval'
+		
+		//Get some circle locations for cell placement
+		int circleX = (cellWidth * this.getColumn());
+		int circleY = (cellHeight * this.getRow());
+		
+		//Go through the strings of color to make them actual colors
+		Color realColor;
+		try {
+		    Field field = Color.class.getField(this.color.toLowerCase());
+		    realColor = (Color)field.get(null);
+		} catch (Exception e) {
+		    realColor = null;
+		}
+		//Set the color and draw.
+		g.setColor(realColor);
+		g.fillOval(circleX, circleY, cellWidth, cellHeight);
+	}
+	
 	public int getRow() {
 		return row;
 	}

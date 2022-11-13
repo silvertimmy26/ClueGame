@@ -16,7 +16,7 @@ Person, Sheriff Silly, Blue, 5, 0
 Person, Bandit The Kid, Red, 18, 0
 Person, Snoop Horse, Green, 24, 9
 Person, Cedric Highnoon, Orange, 24, 14
-Person, Margaret The Wise, Purple, 17, 23
+Person, Margaret The Wise, Magenta, 17, 23
 Person, Big Mama, Pink, 0, 16
 // Weapons
 Weapon, Lasso

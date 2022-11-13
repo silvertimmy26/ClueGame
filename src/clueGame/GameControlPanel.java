@@ -98,10 +98,10 @@ public class GameControlPanel extends JPanel {
 		// get color from setup file
 		Color color;
 		try {
-		    Field field = Color.class.getField(player.getColor());
+		    Field field = Color.class.getField(player.getColor().toLowerCase());
 		    color = (Color)field.get(null);
 		} catch (Exception e) {
-		    color = null; // Not defined
+		    color = null;
 		}
 		currentPlayer.setBackground(color);
 	    currentPlayer.setOpaque(true);

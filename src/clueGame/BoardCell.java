@@ -1,5 +1,7 @@
 package clueGame;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +33,50 @@ public class BoardCell {
 
 	public void addAdj(BoardCell adj) {
 		adjList.add(adj);
+	}
+
+	public void draw(Graphics g, int cellWidth, int cellHeight, int locationX, int locationY) {
+		// method to draw each board cell
+		
+		Color color;
+		
+		//If unused cell then just draw it black with no borders
+		if (this.getInitial() == 'X') {
+			color = Color.BLACK;
+			g.setColor(color);
+			g.fillRect(locationX, locationY, cellWidth, cellHeight);
+			
+			//If room, set to gray and no borders
+		} else if (this.isRoom || (this.getInitial() != 'W' && this.getInitial() != 'X')) {
+			color = Color.GRAY;
+			g.setColor(color);
+			g.fillRect(locationX, locationY, cellWidth, cellHeight);
+			
+			//every other space make it yellow with a border
+		} else {
+			color = Color.YELLOW;
+			g.setColor(color);
+			g.fillRect(locationX, locationY, cellWidth, cellHeight);
+			g.setColor(Color.black);
+			g.drawRect(locationX, locationY, cellWidth, cellHeight);
+		}
+		// if doorway, draw an arrow showing direction of enter
+		if (this.getIsDoorway()) {
+			switch(this.getDoorDirection()) {
+				case LEFT:
+					g.drawString("<", (int)(locationX + (cellWidth * 0.5)), (int)(locationY + (cellHeight * 0.5)));
+					break;
+				case RIGHT:
+					g.drawString(">", (int)(locationX + (cellWidth * 0.5)), (int)(locationY + (cellHeight * 0.5)));
+					break;
+				case UP:
+					g.drawString("^", (int)(locationX + (cellWidth * 0.5)), (int)(locationY + (cellHeight * 0.5)));
+					break;
+				case DOWN:
+					g.drawString("v", (int)(locationX + (cellWidth * 0.5)), (int)(locationY + (cellHeight * 0.5)));
+					break;
+			}
+		}
 	}
 	
 	public char getInitial() {

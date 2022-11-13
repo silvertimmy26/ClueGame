@@ -4,6 +4,8 @@ import clueGame.BadConfigFormatException;
 import clueGame.DoorDirection;
 import experiment.TestBoardCell;
 
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,7 +18,9 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Board {
+import javax.swing.JPanel;
+
+public class Board extends JPanel {
 	
 	private BoardCell[][] grid;
 	private int numRows;
@@ -600,6 +604,43 @@ public class Board {
 		return;
 	}
 
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		
+		//Obtain the width and heights from the window
+		int width = this.getWidth();
+		int height = this.getHeight();
+		
+		//Get our cell sizes
+		int cellWidth = width / numColumns;
+		int cellHeight = height / numRows;
+		
+		//Create an array list to hold all cells that are rooms
+		ArrayList<BoardCell> roomLabels = new ArrayList<BoardCell>();
+		
+		//Go through all board cells to draw them and if they are a room center add them to the array list
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				grid[i][j].draw(g, cellWidth, cellHeight, cellWidth * j, cellHeight * i);
+				// if it's a label cell, add to an arraylist that has roomLabel cells
+				if (grid[i][j].getIsLabel()) {
+					roomLabels.add(grid[i][j]);
+				}
+			}
+		}
+		// draws room names on roomLabel cells
+		for (BoardCell c: roomLabels) {
+		    Font font = new Font("New Roma", Font.BOLD, 15);
+		    g.setFont(font);
+			g.drawString(roomMap.get(c.getInitial()).getName(), c.getCol() * cellWidth, (c.getRow() + 1) * cellHeight);
+		}
+		
+		//Go through all of our players to draw them
+		for (Player p: players) {
+			p.draw(g, cellWidth, cellHeight);
+		}
+	}
 	
 	public Set<BoardCell> getAdjList(int row, int column){
 		return grid[row][column].getAdjList();
@@ -661,6 +702,7 @@ public class Board {
 		this.players = players;
 	}
 
+	
 	
 	
 }
