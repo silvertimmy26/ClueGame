@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class ClueGame extends JFrame {
 	
@@ -24,6 +25,7 @@ public class ClueGame extends JFrame {
 		kcp.setPreferredSize(new Dimension(150, 150));
 		frame.add(kcp, BorderLayout.EAST);
 		frame.setVisible(true);
+		JOptionPane.showMessageDialog(frame, "You are Sheriff Silly. Can you find the solution before the computer players?");
 	}
 	
 }
