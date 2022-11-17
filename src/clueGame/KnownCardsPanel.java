@@ -1,5 +1,6 @@
 package clueGame;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import javax.swing.border.TitledBorder;
 public class KnownCardsPanel extends JPanel {
 	
 	private JTextField cardName;
+	private JFrame frame;
 	
 	public KnownCardsPanel(Player player) {
 		setLayout(new GridLayout(3, 0));
@@ -45,6 +47,21 @@ public class KnownCardsPanel extends JPanel {
 			thePanel = createPanel(player, CardType.WEAPON);
 		}
 		return thePanel;
+	}
+	
+	public void updateAllPanels(Player player) {
+		removeAll();
+		JPanel peoplePanel=new JPanel();
+		JPanel roomPanel= new JPanel();
+		JPanel weaponPanel=new JPanel();
+		
+		peoplePanel = this.updatePanel(player, CardType.PERSON);
+		roomPanel = this.updatePanel(player, CardType.ROOM);
+		weaponPanel = this.updatePanel(player, CardType.WEAPON);
+		this.add(peoplePanel);
+		this.add(roomPanel);
+		this.add(weaponPanel);
+		frame.add(this,BorderLayout.EAST);
 	}
 	
 	public JPanel createPanel(Player player, CardType type) {
@@ -92,6 +109,12 @@ public class KnownCardsPanel extends JPanel {
 
 	}
 	
+	
+	
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
+
 	public static void main(String[] args) {
 		// testing out all our cards when in hand or seen
 		Card testRoom = new Card("Test Room", CardType.ROOM);

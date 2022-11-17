@@ -51,6 +51,8 @@ public class Board extends JPanel {
 	private int cellWidth;
 	private int cellHeight;
 	private JFrame frame = new JFrame();
+	private GameControlPanel gcp;
+	private KnownCardsPanel kcp;
 	
     // variable and methods used for singleton pattern
     private static Board theInstance = new Board();
@@ -246,6 +248,7 @@ public class Board extends JPanel {
 				}
 			}
 		}
+
     }
     
     public void loadSetupConfig() throws BadConfigFormatException, FileNotFoundException {
@@ -656,7 +659,7 @@ public class Board extends JPanel {
 		    Font font = new Font("New Roma", Font.BOLD, 15);
 		    g.setFont(font);
 			String roomName = roomMap.get(c.getInitial()).getName();
-			g.drawString(roomName, c.getCol() * cellWidth, (c.getRow() + 1) * cellHeight);
+			g.drawString(roomName, (c.getCol()-1) * cellWidth, (c.getRow() + 1) * cellHeight);
 		}
 		
 		//Go through all of our players to draw them
@@ -670,12 +673,13 @@ public class Board extends JPanel {
 			return false;
 		} 
 		currentPlayer = (currentPlayer++) % players.size(); // update current player
-		Random rand = new Random(1000);
-		diceRoll = ((rand.nextInt()) % 6) + 1;			   // random dice roll
+		Random rand = new Random();
+		diceRoll = ((rand.nextInt(1000)) % 6) + 1;			   // random dice roll
 		Player player = players.get(currentPlayer);
 		calcTargets(getCell(player.getRow(), player.getColumn()), diceRoll);
 		Set<Character> roomTargets = new HashSet<Character>();
-
+		gcp.setTurn(player, diceRoll);
+		
 		return true;
 	}
 	
@@ -739,6 +743,7 @@ public class Board extends JPanel {
 				handleSuggestion(s, currentPlayer);
 				repaint(); // will be called elsewhere depending on suggested player to move that player
 			}
+			currentPlayerDone=true;
 		}
 		
 		public boolean isValidTarget(int mouseX, int mouseY, int boxX, int boxY) {
@@ -761,6 +766,19 @@ public class Board extends JPanel {
 
 		@Override
 		public void mouseExited(MouseEvent e) {}
+	}
+	
+	public void startUp() {
+		Random rand=new Random();
+		
+		diceRoll = (rand.nextInt(1000) % 6) +1;
+		
+		BoardCell playerLocation = getCell(players.get(currentPlayer).getRow(), players.get(currentPlayer).getColumn());
+		calcTargets(playerLocation, diceRoll);
+		gcp.setTurn(getActualPlayer(), diceRoll);
+		deal();
+		kcp.updateAllPanels(getActualPlayer());
+		repaint();
 	}
 	
 	public Player getActualPlayer() {
@@ -834,6 +852,15 @@ public class Board extends JPanel {
 	public void setFrame(JFrame frame) {
 		this.frame = frame;
 	}
+
+	public void setGcp(GameControlPanel gcp) {
+		this.gcp = gcp;
+	}
+
+	public void setKcp(KnownCardsPanel kcp) {
+		this.kcp = kcp;
+	}
+	
 	
 	
 }
