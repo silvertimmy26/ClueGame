@@ -5,14 +5,15 @@ import java.awt.Graphics;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Player {
 	
 	private String name;
 	private String color;
-	private int row;
-	private int column;
+	protected int row;
+	protected int column;
 	private Set<Card> hand = new HashSet<Card>();
 	private ArrayList<Card> seenCards= new ArrayList<Card>();
 	private Set<Card>theDeck=new HashSet<Card>();
@@ -113,7 +114,9 @@ public abstract class Player {
 	public ArrayList<Card> getSeenCards() {
 		return seenCards;
 	}
-	
-	
+
+	public abstract Solution turnHandling(Set<BoardCell> targets, Map<Character, Room> roomMap);
+
+	protected abstract Solution createSuggestion(Room room);
 	
 }

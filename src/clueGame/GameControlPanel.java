@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
@@ -21,6 +22,8 @@ public class GameControlPanel extends JPanel {
 	private JTextField currentRoll;
 	private JTextField guess;
 	private JTextField guessResult;
+	private Board board;
+	private JFrame clueGameFrame; 
 	
 	public GameControlPanel() {
 		setLayout(new GridLayout(2, 0));
@@ -59,6 +62,8 @@ public class GameControlPanel extends JPanel {
 	    nextButton.setBackground(Color.GREEN);
 	    nextButton.setOpaque(true);
 	    nextButton.setBorderPainted(false);
+	    NextListener n = new NextListener();
+	    nextButton.addActionListener(n);
 		returnPanel.add(accusationButton);
 		returnPanel.add(nextButton);
 		
@@ -111,7 +116,19 @@ public class GameControlPanel extends JPanel {
 	
 	private class NextListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			
+			boolean next;
+			next = board.nextPlayerFlow();
+			if (!next) {
+				JOptionPane.showMessageDialog(clueGameFrame, "Complete your turn before pressing Next!");
+			} else {
+				removeAll();
+				setTurn(board.getActualPlayer(), board.getDiceRoll());
+				setLayout(new GridLayout(2, 0));
+				JPanel topPanel = createTopPanel();
+				JPanel bottomPanel = createBottomPanel();
+				add(topPanel);
+				add(bottomPanel);
+			}
 		}
 	}
 	
@@ -125,6 +142,14 @@ public class GameControlPanel extends JPanel {
 		panel.setTurn(new ComputerPlayer("Col. Mustard", "orange", 0, 0), 5);
 		panel.setGuess("I have no guess!");
 		panel.setGuessResult("So you have nothing?");
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	public void setClueGameFrame(JFrame clueGameFrame) {
+		this.clueGameFrame = clueGameFrame;
 	}
 	
 }

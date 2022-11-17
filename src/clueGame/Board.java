@@ -6,7 +6,13 @@ import experiment.TestBoardCell;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,6 +24,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Board extends JPanel {
@@ -37,6 +45,12 @@ public class Board extends JPanel {
 	private ArrayList<Card> weaponCards = new ArrayList<Card>(); 
 	private Solution theAnswer=new Solution();
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private int currentPlayer = 0;
+	private boolean currentPlayerDone = false;
+	private int diceRoll = 0;
+	private int cellWidth;
+	private int cellHeight;
+	private JFrame frame = new JFrame();
 	
     // variable and methods used for singleton pattern
     private static Board theInstance = new Board();
@@ -53,6 +67,9 @@ public class Board extends JPanel {
     
     //initialize the board (since we are using singleton pattern)
     public void initialize() {
+    	
+    	BoardListener b = new BoardListener();
+    	this.addMouseListener(b);
     	
     	//goes through the setup file
     	try {
@@ -477,7 +494,12 @@ public class Board extends JPanel {
 		recursiveTargeting(startCell, pathLength);
 		//Remove the starting cell
 		targets.remove(startCell);
-		
+		if (targets.isEmpty()) {
+			currentPlayerDone = true;
+		}
+		for (BoardCell b: targets) {
+			b.setTarget(true);
+		}
 	}
 	
 	public void recursiveTargeting(BoardCell startCell, int pathLength) {
@@ -613,8 +635,8 @@ public class Board extends JPanel {
 		int height = this.getHeight();
 		
 		//Get our cell sizes
-		int cellWidth = width / numColumns;
-		int cellHeight = height / numRows;
+		cellWidth = width / numColumns;
+		cellHeight = height / numRows;
 		
 		//Create an array list to hold all cells that are rooms
 		ArrayList<BoardCell> roomLabels = new ArrayList<BoardCell>();
@@ -622,7 +644,7 @@ public class Board extends JPanel {
 		//Go through all board cells to draw them and if they are a room center add them to the array list
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
-				grid[i][j].draw(g, cellWidth, cellHeight, cellWidth * j, cellHeight * i);
+				grid[i][j].draw(g, cellWidth, cellHeight, cellWidth * j, cellHeight * i, roomMap);
 				// if it's a label cell, add to an arraylist that has roomLabel cells
 				if (grid[i][j].getIsLabel()) {
 					roomLabels.add(grid[i][j]);
@@ -633,7 +655,8 @@ public class Board extends JPanel {
 		for (BoardCell c: roomLabels) {
 		    Font font = new Font("New Roma", Font.BOLD, 15);
 		    g.setFont(font);
-			g.drawString(roomMap.get(c.getInitial()).getName(), c.getCol() * cellWidth, (c.getRow() + 1) * cellHeight);
+			String roomName = roomMap.get(c.getInitial()).getName();
+			g.drawString(roomName, c.getCol() * cellWidth, (c.getRow() + 1) * cellHeight);
 		}
 		
 		//Go through all of our players to draw them
@@ -642,6 +665,112 @@ public class Board extends JPanel {
 		}
 	}
 	
+	public boolean nextPlayerFlow() {
+		if (!currentPlayerDone) {
+			return false;
+		} 
+		currentPlayer = (currentPlayer++) % players.size(); // update current player
+		Random rand = new Random(1000);
+		diceRoll = ((rand.nextInt()) % 6) + 1;			   // random dice roll
+		Player player = players.get(currentPlayer);
+		calcTargets(getCell(player.getRow(), player.getColumn()), diceRoll);
+		Set<Character> roomTargets = new HashSet<Character>();
+
+		return true;
+	}
+	
+	public void handleNextTurn() {
+		if (currentPlayer == 0)  {
+			for (BoardCell b: targets) {
+				grid[b.getRow()][b.getCol()].setTarget(true);	// make tile blue
+			}
+			repaint();
+			currentPlayerDone = false;
+		} else {
+			Solution s = new Solution();
+			s = players.get(currentPlayer).turnHandling(targets, roomMap);
+			repaint();
+			if (s != null) {
+				if (s.getIsAccusation()) {
+					checkAccusation(s); // either win or eliminate
+				} else {
+					Card c = new Card();
+					c = handleSuggestion(s, currentPlayer);
+					if (c != null) {
+						players.get(currentPlayer).addToSeen(c);
+					}
+				}
+			}
+		}
+	}
+	
+	private class BoardListener implements MouseListener {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (currentPlayer != 0 || currentPlayerDone == true) {
+				return;
+			} else {
+				boolean validClick = false;
+				for (int i = 0; i < numRows; i++) {
+					for (int j = 0; j < numColumns; j++) {
+						if (isValidTarget(e.getX(), e.getY(), getCell(i, j).getCol() * cellWidth, getCell(i, j).getRow() * cellHeight)) {
+							if (targets.contains(grid[i][j]) || roomMap.get(grid[i][j].getInitial()).getCenterCell().getIsTarget()) {
+								validClick = true;
+								players.get(currentPlayer).setRow(i);
+								players.get(currentPlayer).setColumn(j);
+							}
+						}
+					}
+				}
+				if (!validClick) {
+					JOptionPane.showMessageDialog(frame, "Invalid target!");
+					return;
+				}
+			}
+			for (BoardCell b: targets) {
+				b.setTarget(false);
+			}
+			repaint();
+			BoardCell playerLocation = getCell(players.get(currentPlayer).getRow(), players.get(currentPlayer).getColumn());
+			if (playerLocation.getIsRoom()) {
+				Solution s = new Solution();
+				s = players.get(currentPlayer).createSuggestion(roomMap.get(playerLocation.getInitial()));
+				handleSuggestion(s, currentPlayer);
+				repaint(); // will be called elsewhere depending on suggested player to move that player
+			}
+		}
+		
+		public boolean isValidTarget(int mouseX, int mouseY, int boxX, int boxY) {
+			Rectangle rect = new Rectangle(boxX, boxY, cellWidth, cellHeight);
+			if (rect.contains(new Point(mouseX, mouseY))) {
+				return true;
+			}
+			return false;
+		}
+
+		// dont need these functions
+		@Override
+		public void mousePressed(MouseEvent e) {}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
+	}
+	
+	public Player getActualPlayer() {
+		return players.get(currentPlayer);
+	}
+	
+	public int getDiceRoll() {
+		return diceRoll;
+	}
+
 	public Set<BoardCell> getAdjList(int row, int column){
 		return grid[row][column].getAdjList();
 	}
@@ -702,7 +831,9 @@ public class Board extends JPanel {
 		this.players = players;
 	}
 
-	
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
 	
 	
 }

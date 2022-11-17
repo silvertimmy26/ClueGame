@@ -2,12 +2,13 @@ package clueGame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 public class ComputerPlayer extends Player {
 
-	
+	boolean makeAccusation = false;
 	
 	public ComputerPlayer(String name, String color, int row, int column) {
 		super(name, color, row, column);
@@ -88,4 +89,20 @@ public class ComputerPlayer extends Player {
 		return tempList.get(randomNum);
 	}
 
+	public Solution turnHandling(Set<BoardCell> targets, Map<Character, Room> roomMap) {
+		if (makeAccusation) {
+			// do accusation stuff, set accusation bool in solution to true
+		} else {
+			BoardCell move = selectTarget(targets);
+			row = move.getRow();
+			column = move.getCol();
+			if (move.getIsRoom()) {
+				Solution computerSolution = new Solution();
+				computerSolution = createSuggestion(roomMap.get(move.getInitial()));
+				return computerSolution;
+			}
+		}
+		return null;
+	}
+	
 }

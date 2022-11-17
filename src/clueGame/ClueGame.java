@@ -17,8 +17,10 @@ public class ClueGame extends JFrame {
 		board = Board.getInstance();
 		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
 		board.initialize();
+		board.setFrame(frame);
 		frame.add(board, BorderLayout.CENTER);
 		GameControlPanel gcp = new GameControlPanel();
+		gcp.setBoard(board);
 		frame.add(gcp, BorderLayout.SOUTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		KnownCardsPanel kcp = new KnownCardsPanel(board.getPlayers().get(0));
@@ -26,6 +28,7 @@ public class ClueGame extends JFrame {
 		frame.add(kcp, BorderLayout.EAST);
 		frame.setVisible(true);
 		JOptionPane.showMessageDialog(frame, "You are Sheriff Silly. Can you find the solution before the computer players?");
+		
 	}
 	
 }

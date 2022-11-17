@@ -1,5 +1,6 @@
 package clueGame;
 
+import java.util.Map;
 import java.util.Set;
 
 public class HumanPlayer extends Player {
@@ -15,4 +16,14 @@ public class HumanPlayer extends Player {
 		this.setHand(tempHand);
 	}
 
+	@Override
+	public Solution turnHandling(Set<BoardCell> targets, Map<Character, Room> roomMap) {
+		return null;
+		// do nothing
+	}
+
+	public Solution createSuggestion(Room currentRoom) {
+		return null;
+	}
+	
 }

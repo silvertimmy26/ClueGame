@@ -3,6 +3,7 @@ package clueGame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class BoardCell {
@@ -18,6 +19,7 @@ public class BoardCell {
 	private boolean isOccupied=false;
 	private Set<BoardCell> adjList = new HashSet<BoardCell>();
 	private String roomName;
+	private boolean target = false;
 	
 	public BoardCell() {
 		
@@ -35,26 +37,36 @@ public class BoardCell {
 		adjList.add(adj);
 	}
 
-	public void draw(Graphics g, int cellWidth, int cellHeight, int locationX, int locationY) {
+	public void draw(Graphics g, int cellWidth, int cellHeight, int locationX, int locationY, Map<Character, Room> roomMap) {
 		// method to draw each board cell
 		
 		Color color;
 		
 		//If unused cell then just draw it black with no borders
-		if (this.getInitial() == 'X') {
+		char cellInitial = this.getInitial();
+		if (cellInitial == 'X') {
 			color = Color.BLACK;
 			g.setColor(color);
 			g.fillRect(locationX, locationY, cellWidth, cellHeight);
 			
-			//If room, set to gray and no borders
-		} else if (this.isRoom || (this.getInitial() != 'W' && this.getInitial() != 'X')) {
-			color = Color.GRAY;
+			//If room, set to gray and no borders (unless its a target)
+		} else if (this.isRoom || (cellInitial != 'W' && cellInitial != 'X')) {
+			BoardCell roomCenterCell = roomMap.get(cellInitial).getCenterCell();
+			if (roomCenterCell.getIsTarget()) {
+				color = Color.CYAN;
+			} else {
+				color = Color.GRAY;
+			}
 			g.setColor(color);
 			g.fillRect(locationX, locationY, cellWidth, cellHeight);
 			
 			//every other space make it yellow with a border
 		} else {
-			color = Color.YELLOW;
+			if (target) {
+				color = Color.CYAN;
+			} else {
+				color = Color.YELLOW;
+			}
 			g.setColor(color);
 			g.fillRect(locationX, locationY, cellWidth, cellHeight);
 			g.setColor(Color.black);
@@ -162,6 +174,14 @@ public class BoardCell {
 
 	public void setRoomName(String roomName) {
 		this.roomName = roomName;
+	}
+
+	public void setTarget(boolean target) {
+		this.target = target;
+	}
+
+	public boolean getIsTarget() {
+		return target;
 	}
 	
 	

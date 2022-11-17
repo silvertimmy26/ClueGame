@@ -5,6 +5,7 @@ public class Solution {
 	private Card room= new Card();
 	private Card person= new Card();
 	private Card weapon=new Card();
+	private boolean accusation = false;
 	
 	public Solution() {
 		
@@ -34,5 +35,15 @@ public class Solution {
 	public void setWeapon(Card weapon) {
 		this.weapon = weapon;
 	}
+
+	public boolean getIsAccusation() {
+		return accusation;
+	}
+
+	public void setAccusation(boolean accusation) {
+		this.accusation = accusation;
+	}
+	
+	
 	
 }
