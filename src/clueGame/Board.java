@@ -70,6 +70,7 @@ public class Board extends JPanel {
     //initialize the board (since we are using singleton pattern)
     public void initialize() {
     	
+    	//Added a listener for board clicks
     	BoardListener b = new BoardListener();
     	this.addMouseListener(b);
     	
@@ -497,9 +498,12 @@ public class Board extends JPanel {
 		recursiveTargeting(startCell, pathLength);
 		//Remove the starting cell
 		targets.remove(startCell);
+		
+		//Check for empty targets in case of being boxed in
 		if (targets.isEmpty()) {
 			currentPlayerDone = true;
 		}
+		//Set all of the targets to know they're targets
 		for (BoardCell b: targets) {
 			b.setTarget(true);
 		}
@@ -669,9 +673,13 @@ public class Board extends JPanel {
 	}
 	
 	public boolean nextPlayerFlow() {
+		
+		//check if current player is done
 		if (!currentPlayerDone) {
 			return false;
 		} 
+		
+		//Increment player, get dice roll, change whos turn it is
 		currentPlayer = (currentPlayer++) % players.size(); // update current player
 		Random rand = new Random();
 		diceRoll = ((rand.nextInt(1000)) % 6) + 1;			   // random dice roll
@@ -684,6 +692,8 @@ public class Board extends JPanel {
 	}
 	
 	public void handleNextTurn() {
+		
+		//Ensure it is current player's turn
 		if (currentPlayer == 0)  {
 			for (BoardCell b: targets) {
 				grid[b.getRow()][b.getCol()].setTarget(true);	// make tile blue
@@ -691,9 +701,12 @@ public class Board extends JPanel {
 			repaint();
 			currentPlayerDone = false;
 		} else {
+			//turn situation for computer players
 			Solution s = new Solution();
 			s = players.get(currentPlayer).turnHandling(targets, roomMap);
 			repaint();
+			
+			//Check if s is accusation or suggestion and then handle
 			if (s != null) {
 				if (s.getIsAccusation()) {
 					checkAccusation(s); // either win or eliminate
@@ -712,14 +725,20 @@ public class Board extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			//Check for mouse clicks
+			
+			//Make sure it is our current players turn
 			if (currentPlayer != 0 || currentPlayerDone == true) {
 				return;
 			} else {
+				//Check click location
 				boolean validClick = false;
 				for (int i = 0; i < numRows; i++) {
 					for (int j = 0; j < numColumns; j++) {
 						if (isValidTarget(e.getX(), e.getY(), getCell(i, j).getCol() * cellWidth, getCell(i, j).getRow() * cellHeight)) {
-							if (targets.contains(grid[i][j]) || roomMap.get(grid[i][j].getInitial()).getCenterCell().getIsTarget()) {
+							BoardCell roomCenterCell = roomMap.get(grid[i][j].getInitial()).getCenterCell();
+							if (targets.contains(grid[i][j]) || (roomCenterCell != null) && roomCenterCell.getIsTarget()) {
+								//If click is a valid location and everything works, change player location
 								validClick = true;
 								players.get(currentPlayer).setRow(i);
 								players.get(currentPlayer).setColumn(j);
@@ -727,15 +746,22 @@ public class Board extends JPanel {
 						}
 					}
 				}
+				
+				//If invalid location give error message
 				if (!validClick) {
 					JOptionPane.showMessageDialog(frame, "Invalid target!");
 					return;
 				}
 			}
+			
+			//Set all of the board cells back to false
 			for (BoardCell b: targets) {
 				b.setTarget(false);
 			}
+			
 			repaint();
+			
+			//If the player is in a room, handle this situation
 			BoardCell playerLocation = getCell(players.get(currentPlayer).getRow(), players.get(currentPlayer).getColumn());
 			if (playerLocation.getIsRoom()) {
 				Solution s = new Solution();
@@ -746,6 +772,7 @@ public class Board extends JPanel {
 			currentPlayerDone=true;
 		}
 		
+		//Check for click position
 		public boolean isValidTarget(int mouseX, int mouseY, int boxX, int boxY) {
 			Rectangle rect = new Rectangle(boxX, boxY, cellWidth, cellHeight);
 			if (rect.contains(new Point(mouseX, mouseY))) {
@@ -768,13 +795,18 @@ public class Board extends JPanel {
 		public void mouseExited(MouseEvent e) {}
 	}
 	
+	//Function for more start up requirements
 	public void startUp() {
+		//Rolls dice
 		Random rand=new Random();
 		
 		diceRoll = (rand.nextInt(1000) % 6) +1;
 		
+		//Calculate or initial targets
 		BoardCell playerLocation = getCell(players.get(currentPlayer).getRow(), players.get(currentPlayer).getColumn());
 		calcTargets(playerLocation, diceRoll);
+		
+		//Make references to panels
 		gcp.setTurn(getActualPlayer(), diceRoll);
 		deal();
 		kcp.updateAllPanels(getActualPlayer());

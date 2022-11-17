@@ -50,6 +50,8 @@ public class KnownCardsPanel extends JPanel {
 	}
 	
 	public void updateAllPanels(Player player) {
+		//Update our known cards panel
+		
 		removeAll();
 		JPanel peoplePanel=new JPanel();
 		JPanel roomPanel= new JPanel();

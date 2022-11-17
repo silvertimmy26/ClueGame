@@ -115,12 +115,17 @@ public class GameControlPanel extends JPanel {
 	}
 	
 	private class NextListener implements ActionListener {
+		//Set up listener for buttons being pressed
 		public void actionPerformed(ActionEvent e) {
 			boolean next;
+			
+			//Send off the next stipulations to where need be
 			next = board.nextPlayerFlow();
 			if (!next) {
 				JOptionPane.showMessageDialog(clueGameFrame, "Complete your turn before pressing Next!");
 			} else {
+				
+				//Update the board
 				removeAll();
 				setTurn(board.getActualPlayer(), board.getDiceRoll());
 				setLayout(new GridLayout(2, 0));

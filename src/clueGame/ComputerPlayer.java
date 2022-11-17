@@ -90,12 +90,17 @@ public class ComputerPlayer extends Player {
 	}
 
 	public Solution turnHandling(Set<BoardCell> targets, Map<Character, Room> roomMap) {
+		
+		//Take care of computer doing thier turns
 		if (makeAccusation) {
 			// do accusation stuff, set accusation bool in solution to true
 		} else {
+			//Move the computer player
 			BoardCell move = selectTarget(targets);
 			row = move.getRow();
 			column = move.getCol();
+			
+			//Allow computer player to make suggestions
 			if (move.getIsRoom()) {
 				Solution computerSolution = new Solution();
 				computerSolution = createSuggestion(roomMap.get(move.getInitial()));
