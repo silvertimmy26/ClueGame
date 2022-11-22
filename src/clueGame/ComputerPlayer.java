@@ -8,7 +8,6 @@ import java.util.Set;
 
 public class ComputerPlayer extends Player {
 
-	boolean makeAccusation = false;
 	
 	public ComputerPlayer(String name, String color, int row, int column) {
 		super(name, color, row, column);
@@ -91,22 +90,36 @@ public class ComputerPlayer extends Player {
 
 	public Solution turnHandling(Set<BoardCell> targets, Map<Character, Room> roomMap) {
 		
-		//Take care of computer doing thier turns
+		//Take care of computer doing their turns
 		if (makeAccusation) {
 			// do accusation stuff, set accusation bool in solution to true
-		} else {
-			//Move the computer player
-			BoardCell move = selectTarget(targets);
-			row = move.getRow();
-			column = move.getCol();
-			
-			//Allow computer player to make suggestions
-			if (move.getIsRoom()) {
-				Solution computerSolution = new Solution();
-				computerSolution = createSuggestion(roomMap.get(move.getInitial()));
-				return computerSolution;
+			makeAccusation=false;
+			boolean roomNotInHand=true;
+			for(Card c: getSeenCards()) {
+				if(c.getCardName().equals(getSuggestionForAccusation().getRoom().getCardName())) {
+					roomNotInHand=false;
+				}
 			}
+			
+			if(roomNotInHand) {
+				getSuggestionForAccusation().setAccusation(true);
+				return getSuggestionForAccusation();
+			}
+			
+			
+		} 
+		//Move the computer player
+		BoardCell move = selectTarget(targets);
+		row = move.getRow();
+		column = move.getCol();
+			
+		//Allow computer player to make suggestions
+		if (move.getIsRoom()) {
+			Solution computerSolution = new Solution();
+			computerSolution = createSuggestion(roomMap.get(move.getInitial()));
+			return computerSolution;
 		}
+		
 		return null;
 	}
 	

@@ -37,7 +37,7 @@ public class BoardCell {
 		adjList.add(adj);
 	}
 
-	public void draw(Graphics g, int cellWidth, int cellHeight, int locationX, int locationY, Map<Character, Room> roomMap) {
+	public void draw(Graphics g, int cellWidth, int cellHeight, int locationX, int locationY, Map<Character, Room> roomMap, int currentPlayer) {
 		// method to draw each board cell
 		
 		Color color;
@@ -52,8 +52,9 @@ public class BoardCell {
 			//If room, set to gray and no borders (unless its a target)
 		} else if (this.isRoom || (cellInitial != 'W' && cellInitial != 'X')) {
 			BoardCell roomCenterCell = roomMap.get(cellInitial).getCenterCell();
-			if (roomCenterCell.getIsTarget()) {
+			if (roomCenterCell.getIsTarget() && currentPlayer == 0) {
 				color = Color.CYAN;
+				//target=false;
 			} else {
 				color = Color.GRAY;
 			}
@@ -62,8 +63,9 @@ public class BoardCell {
 			
 			//every other space make it yellow with a border
 		} else {
-			if (target) {
+			if (target && currentPlayer == 0) {
 				color = Color.CYAN;
+				//target=false;
 			} else {
 				color = Color.YELLOW;
 			}

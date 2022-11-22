@@ -37,14 +37,14 @@ public class KnownCardsPanel extends JPanel {
 	public JPanel updatePanel(Player player, CardType type) {
 		JPanel thePanel = new JPanel();
 		if (type == CardType.PERSON) {
-			thePanel.setBorder(new TitledBorder (new EtchedBorder(), "People"));
 			thePanel = createPanel(player, CardType.PERSON);
+			thePanel.setBorder(new TitledBorder (new EtchedBorder(), "People"));
 		} else if (type == CardType.ROOM) {
-			thePanel.setBorder(new TitledBorder (new EtchedBorder(), "Rooms"));
 			thePanel = createPanel(player, CardType.ROOM);
+			thePanel.setBorder(new TitledBorder (new EtchedBorder(), "Rooms"));
 		} else {
-			thePanel.setBorder(new TitledBorder (new EtchedBorder(), "Weapons"));
 			thePanel = createPanel(player, CardType.WEAPON);
+			thePanel.setBorder(new TitledBorder (new EtchedBorder(), "Weapons"));
 		}
 		return thePanel;
 	}
@@ -53,13 +53,10 @@ public class KnownCardsPanel extends JPanel {
 		//Update our known cards panel
 		
 		removeAll();
-		JPanel peoplePanel=new JPanel();
-		JPanel roomPanel= new JPanel();
-		JPanel weaponPanel=new JPanel();
 		
-		peoplePanel = this.updatePanel(player, CardType.PERSON);
-		roomPanel = this.updatePanel(player, CardType.ROOM);
-		weaponPanel = this.updatePanel(player, CardType.WEAPON);
+		JPanel peoplePanel = this.updatePanel(player, CardType.PERSON);
+		JPanel roomPanel = this.updatePanel(player, CardType.ROOM);
+		JPanel weaponPanel = this.updatePanel(player, CardType.WEAPON);
 		this.add(peoplePanel);
 		this.add(roomPanel);
 		this.add(weaponPanel);

@@ -4,6 +4,8 @@ import clueGame.BadConfigFormatException;
 import clueGame.DoorDirection;
 import experiment.TestBoardCell;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -15,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,9 +27,13 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Board extends JPanel {
 	
@@ -53,6 +60,12 @@ public class Board extends JPanel {
 	private JFrame frame = new JFrame();
 	private GameControlPanel gcp;
 	private KnownCardsPanel kcp;
+	private String suggestionRoom;
+	private String suggestionPerson;
+	private String suggestionWeapon;
+	private JFrame suggestionFrame;
+	private String tempRoomName;
+	private Character tempRoomInitial;
 	
     // variable and methods used for singleton pattern
     private static Board theInstance = new Board();
@@ -507,11 +520,17 @@ public class Board extends JPanel {
 		for (BoardCell b: targets) {
 			b.setTarget(true);
 		}
+		if(getActualPlayer().getIsMoved()) {
+			targets.add(startCell);
+			startCell.setTarget(true);
+			getActualPlayer().setMoved(false);
+		}
 	}
 	
 	public void recursiveTargeting(BoardCell startCell, int pathLength) {
 		//Obtain adjacent cells
-		Set<BoardCell> temp=startCell.getAdjList();
+		Set<BoardCell> temp= new HashSet<BoardCell>();
+		temp=startCell.getAdjList();
 		
 		for(BoardCell t:temp) {
 			
@@ -553,11 +572,11 @@ public class Board extends JPanel {
 		
 		//Create random numbers for indexes
 		Random rand = new Random();
-		int roomRand = rand.nextInt(10000);
+		int roomRand = rand.nextInt(1000);
 		roomRand = roomRand % roomCards.size();
-		int peopleRand = rand.nextInt(10000);
+		int peopleRand = rand.nextInt(1000);
 		peopleRand = peopleRand % peopleCards.size();
-		int weaponRand = rand.nextInt(10000);
+		int weaponRand = rand.nextInt(1000);
 		weaponRand = weaponRand % weaponCards.size();
 		
 		//Set up a solution
@@ -575,7 +594,7 @@ public class Board extends JPanel {
 		
 		//While loop for dealing
 		while (allCardsCopy.size() > 0) {
-			cardDealRand = rand.nextInt(10000);
+			cardDealRand = rand.nextInt(1000);
 			cardDealRand = cardDealRand % allCardsCopy.size();
 			players.get(currentPerson).updateHand(allCardsCopy.get(cardDealRand));
 			allCardsCopy.remove(cardDealRand);
@@ -594,9 +613,18 @@ public class Board extends JPanel {
 		if(accusation.getRoom().equals(this.getTheAnswer().getRoom())
 			&& accusation.getPerson().equals(this.getTheAnswer().getPerson())
 			&& accusation.getWeapon().equals(this.getTheAnswer().getWeapon())) {
+			if (currentPlayer == 0) {
+				JOptionPane.showMessageDialog(frame, "Congratulations! You win, yeehaw!");
+				frame.dispose();
+			} else {
+				JOptionPane.showMessageDialog(frame, "Sorry partner, you lost! Dag nabbit!");
+				frame.dispose();
+			}
 			return true;
-		}
+		} 
 		//If not all parts match, set to false
+		JOptionPane.showMessageDialog(frame, "Your accusation was wrong! You lose and are going to jail!");
+		frame.dispose();
 		return false;
 	}
 	
@@ -608,12 +636,19 @@ public class Board extends JPanel {
 			playerLookAt=0;
 		}
 		
+		gcp.setGuess(suggestion.getPerson().getCardName()+", "+suggestion.getRoom().getCardName()+", "+suggestion.getWeapon().getCardName());
 		//While loop to go through each player to see if their cards can disprove other people
 		while(stopIndex<5) {
 			Card temp=new Card();
 			temp=players.get(playerLookAt).disproveSuggestion(suggestion);
 			//Return if there is a card that can disprove
 			if (temp !=null) {
+				if(currentPlayer == 0) {
+					gcp.setGuessResult(temp.getCardName());
+				}
+				else {
+					gcp.setGuessResult("Disproved, Buckaroo");
+				}
 				return temp;
 			}
 			//Increment variables
@@ -623,7 +658,17 @@ public class Board extends JPanel {
 				playerLookAt=0;
 			}
 		}
+		
+		if(currentPlayer == 0) {
+			gcp.setGuessResult("You might be on to something, partner! Your suggestion wasn't disproved!");
+		}
+		else {
+			gcp.setGuessResult("Not disproven");
+		}
+	
 		//If no card found, return null
+		getActualPlayer().setMakeAccusation(true);
+		getActualPlayer().setSuggestionForAccusation(suggestion);
 		return null;
 	}
 	
@@ -651,7 +696,7 @@ public class Board extends JPanel {
 		//Go through all board cells to draw them and if they are a room center add them to the array list
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
-				grid[i][j].draw(g, cellWidth, cellHeight, cellWidth * j, cellHeight * i, roomMap);
+				grid[i][j].draw(g, cellWidth, cellHeight, cellWidth * j, cellHeight * i, roomMap, currentPlayer);
 				// if it's a label cell, add to an arraylist that has roomLabel cells
 				if (grid[i][j].getIsLabel()) {
 					roomLabels.add(grid[i][j]);
@@ -672,6 +717,28 @@ public class Board extends JPanel {
 		}
 	}
 	
+	public JTextField setCurrPlayer() {
+		JTextField temp= new JTextField(20);
+		temp.setText(getActualPlayer().getName());
+		
+		Color color;
+		try {
+		    Field field = Color.class.getField(getActualPlayer().getColor().toLowerCase());
+		    color = (Color)field.get(null);
+		} catch (Exception e) {
+		    color = null;
+		}
+		temp.setBackground(color);
+	    temp.setOpaque(true);
+	    return temp;
+	}
+	
+	public JTextField setRoll (int roll) {
+		JTextField temp=new JTextField(20);
+		temp.setText(Integer.toString(roll));
+		return temp;
+	}
+	
 	public boolean nextPlayerFlow() {
 		
 		//check if current player is done
@@ -680,13 +747,25 @@ public class Board extends JPanel {
 		} 
 		
 		//Increment player, get dice roll, change whos turn it is
-		currentPlayer = (currentPlayer++) % players.size(); // update current player
+		currentPlayer = (currentPlayer + 1) % players.size(); // update current player
 		Random rand = new Random();
 		diceRoll = ((rand.nextInt(1000)) % 6) + 1;			   // random dice roll
 		Player player = players.get(currentPlayer);
+		
+		for(int i=0; i<numRows; i++) {
+			for(int j=0; j<numColumns; j++) {
+				grid[i][j].setTarget(false);
+			}
+		}
+		
 		calcTargets(getCell(player.getRow(), player.getColumn()), diceRoll);
 		Set<Character> roomTargets = new HashSet<Character>();
-		gcp.setTurn(player, diceRoll);
+		//gcp.setTurn(player, diceRoll);
+		JTextField currPlayer = setCurrPlayer();
+		gcp.setCurrentPlayer(currPlayer);
+		JTextField currRoll = setRoll(diceRoll);
+		gcp.setCurrentRoll(currRoll);
+		gcp.revalidate();
 		
 		return true;
 	}
@@ -708,9 +787,20 @@ public class Board extends JPanel {
 			
 			//Check if s is accusation or suggestion and then handle
 			if (s != null) {
+				
 				if (s.getIsAccusation()) {
 					checkAccusation(s); // either win or eliminate
 				} else {
+					
+					String movePlayer= s.getPerson().getCardName();
+					for(Player p: players) {
+						if(p.getName().equals(movePlayer)) {
+							p.setRow(getActualPlayer().getRow());
+							p.setColumn(getActualPlayer().getColumn());
+							p.setMoved(true);
+						}
+					}
+					
 					Card c = new Card();
 					c = handleSuggestion(s, currentPlayer);
 					if (c != null) {
@@ -737,11 +827,16 @@ public class Board extends JPanel {
 					for (int j = 0; j < numColumns; j++) {
 						if (isValidTarget(e.getX(), e.getY(), getCell(i, j).getCol() * cellWidth, getCell(i, j).getRow() * cellHeight)) {
 							BoardCell roomCenterCell = roomMap.get(grid[i][j].getInitial()).getCenterCell();
-							if (targets.contains(grid[i][j]) || (roomCenterCell != null) && roomCenterCell.getIsTarget()) {
+							if (targets.contains(grid[i][j]) || ((roomCenterCell != null) && roomCenterCell.getIsTarget())) {
 								//If click is a valid location and everything works, change player location
 								validClick = true;
 								players.get(currentPlayer).setRow(i);
 								players.get(currentPlayer).setColumn(j);
+								
+								if(((roomCenterCell != null) && roomCenterCell.getIsTarget())) {
+									players.get(currentPlayer).setRow(roomCenterCell.getRow());
+									players.get(currentPlayer).setColumn(roomCenterCell.getCol());
+								}
 							}
 						}
 					}
@@ -765,8 +860,8 @@ public class Board extends JPanel {
 			BoardCell playerLocation = getCell(players.get(currentPlayer).getRow(), players.get(currentPlayer).getColumn());
 			if (playerLocation.getIsRoom()) {
 				Solution s = new Solution();
-				s = players.get(currentPlayer).createSuggestion(roomMap.get(playerLocation.getInitial()));
-				handleSuggestion(s, currentPlayer);
+				tempRoomInitial=playerLocation.getInitial();
+				SuggestionGUI sg = new SuggestionGUI(playerLocation.getRoomName());
 				repaint(); // will be called elsewhere depending on suggested player to move that player
 			}
 			currentPlayerDone=true;
@@ -795,12 +890,108 @@ public class Board extends JPanel {
 		public void mouseExited(MouseEvent e) {}
 	}
 	
+	private class SuggestionGUI extends JFrame {
+		
+		public SuggestionGUI(String roomName) {
+			setSize(400, 250);
+			setTitle("Make an Suggestion");
+			SuggestionPanel sp = new SuggestionPanel(this, roomName);
+			add(sp, BorderLayout.CENTER);
+			setVisible(true);
+		}
+	}
+	
+	private class SuggestionPanel extends JPanel {
+		
+		JTextField room;
+		private JComboBox<String> person, weapon;
+		
+		private class ComboListener implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == person) {
+					suggestionPerson = person.getSelectedItem().toString();
+				} else if (e.getSource() == weapon) {
+					suggestionWeapon = weapon.getSelectedItem().toString();
+				}
+				
+			}
+			
+		}
+		
+		public SuggestionPanel(JFrame frame, String roomName) {
+			suggestionFrame=frame;
+			setLayout(new GridLayout(4, 2));
+			JLabel roomLabel = new JLabel("Room");
+			JLabel personLabel = new JLabel("Person");
+			JLabel weaponLabel = new JLabel("Weapon");
+			ComboListener cl = new ComboListener();
+			room = new JTextField();
+			room.setText(roomName);
+			tempRoomName = roomName;
+			person = new JComboBox<String>();
+			person.addActionListener(cl);
+			weapon = new JComboBox<String>();
+			weapon.addActionListener(cl);
+			for (Card c: getDeck()) {
+				if (c.getType() == CardType.PERSON) {
+					person.addItem(c.getCardName());
+				} else if (c.getType() == CardType.WEAPON) {
+					weapon.addItem(c.getCardName());
+				}
+			}
+			add(roomLabel);
+			add(room);
+			add(personLabel);
+			add(person);
+			add(weaponLabel);
+			add(weapon);
+			SubmitSuggestionListener ssl= new SubmitSuggestionListener();
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(ssl);
+			JButton cancelButton = new JButton("Cancel");
+			cancelButton.addActionListener(e ->{
+				frame.dispose();
+			});
+			add(submitButton);
+			add(cancelButton);
+		}
+	}
+	
+	private class SubmitSuggestionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Solution s = new Solution();
+			for (Card c: getDeck()) {
+				if (c.getCardName().equals(suggestionPerson)) {
+					s.setPerson(c);
+				} else if (c.getCardName().equals(suggestionWeapon)) {
+					s.setWeapon(c);
+				} else if (c.getCardName().equals(tempRoomName));
+			}
+			String personToMove = s.getPerson().getCardName();
+			Room currRoom=roomMap.get(tempRoomInitial);
+			for (Player p: players) {
+				if (p.getName().equals(personToMove)) {
+					p.setRow(currRoom.getCenterCell().getRow());
+					p.setColumn(currRoom.getCenterCell().getCol());
+					p.setMoved(true);
+				}
+			}
+			handleSuggestion(s, currentPlayer);
+			suggestionFrame.dispose();
+		}
+		
+	}
+	
 	//Function for more start up requirements
 	public void startUp() {
 		//Rolls dice
 		Random rand=new Random();
 		
-		diceRoll = (rand.nextInt(1000) % 6) +1;
+		diceRoll = (rand.nextInt(1000) % 6) + 1;
 		
 		//Calculate or initial targets
 		BoardCell playerLocation = getCell(players.get(currentPlayer).getRow(), players.get(currentPlayer).getColumn());
@@ -811,6 +1002,7 @@ public class Board extends JPanel {
 		deal();
 		kcp.updateAllPanels(getActualPlayer());
 		repaint();
+		revalidate();
 	}
 	
 	public Player getActualPlayer() {
@@ -892,7 +1084,9 @@ public class Board extends JPanel {
 	public void setKcp(KnownCardsPanel kcp) {
 		this.kcp = kcp;
 	}
-	
-	
+
+	public int getCurrentPlayer() {
+		return currentPlayer;
+	}
 	
 }

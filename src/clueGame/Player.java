@@ -17,6 +17,9 @@ public abstract class Player {
 	private Set<Card> hand = new HashSet<Card>();
 	private ArrayList<Card> seenCards= new ArrayList<Card>();
 	private Set<Card>theDeck=new HashSet<Card>();
+	private boolean moved = false;
+	boolean makeAccusation = false;
+	private Solution suggestionForAccusation= new Solution();
 	
 	public Player(String name, String color, int row, int column) {
 		super();
@@ -113,6 +116,32 @@ public abstract class Player {
 
 	public ArrayList<Card> getSeenCards() {
 		return seenCards;
+	}
+	
+
+	public boolean getIsMoved() {
+		return moved;
+	}
+
+	public void setMoved(boolean moved) {
+		this.moved = moved;
+	}
+	
+
+	public boolean getMakeAccusation() {
+		return makeAccusation;
+	}
+
+	public void setMakeAccusation(boolean makeAccusation) {
+		this.makeAccusation = makeAccusation;
+	}
+
+	public Solution getSuggestionForAccusation() {
+		return suggestionForAccusation;
+	}
+
+	public void setSuggestionForAccusation(Solution suggestionForAccusation) {
+		this.suggestionForAccusation = suggestionForAccusation;
 	}
 
 	public abstract Solution turnHandling(Set<BoardCell> targets, Map<Character, Room> roomMap);

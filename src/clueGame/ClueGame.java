@@ -13,11 +13,11 @@ public class ClueGame extends JFrame {
 	
 	public static void main(String[] args) {
 		
-		//Make the fram
+		//Make the frame
 		JFrame frame = new JFrame("Clue Game - CSCI 306");
 		frame.setSize(1000, 1000);
 		
-		//Create board and add it to the fram
+		//Create board and add it to the frame
 		board = Board.getInstance();
 		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
 		board.initialize();
@@ -27,9 +27,10 @@ public class ClueGame extends JFrame {
 		//Create our game control panel and add it where need be
 		GameControlPanel gcp = new GameControlPanel();
 		gcp.setBoard(board);
-		board.setGcp(gcp);
+		gcp.setClueGameFrame(frame);
 		frame.add(gcp, BorderLayout.SOUTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		board.setGcp(gcp);
 		
 		//Create our known cards panel and add it where need be
 		KnownCardsPanel kcp = new KnownCardsPanel(board.getPlayers().get(0));

@@ -13,6 +13,7 @@ public class HumanPlayer extends Player {
 	public void updateHand(Card card) {
 		Set<Card> tempHand = this.getHand();
 		tempHand.add(card);
+		this.addToSeen(card);
 		this.setHand(tempHand);
 	}
 
@@ -25,5 +26,7 @@ public class HumanPlayer extends Player {
 	public Solution createSuggestion(Room currentRoom) {
 		return null;
 	}
+	
+	
 	
 }

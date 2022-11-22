@@ -2,12 +2,14 @@ package clueGame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,6 +26,10 @@ public class GameControlPanel extends JPanel {
 	private JTextField guessResult;
 	private Board board;
 	private JFrame clueGameFrame; 
+	private String accusationRoom;
+	private String accusationPerson;
+	private String accusationWeapon;
+	private JFrame accusationFrame;
 	
 	public GameControlPanel() {
 		setLayout(new GridLayout(2, 0));
@@ -55,6 +61,8 @@ public class GameControlPanel extends JPanel {
 		returnPanel.add(rollPanel);
 		// third box and fourth box - button 
 		JButton accusationButton = new JButton("Make Accusation");
+		AccusationListener al = new AccusationListener();
+		accusationButton.addActionListener(al);
 	    accusationButton.setBackground(Color.CYAN);
 	    accusationButton.setOpaque(true);
 	    accusationButton.setBorderPainted(false);
@@ -116,6 +124,7 @@ public class GameControlPanel extends JPanel {
 	
 	private class NextListener implements ActionListener {
 		//Set up listener for buttons being pressed
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			boolean next;
 			
@@ -126,15 +135,127 @@ public class GameControlPanel extends JPanel {
 			} else {
 				
 				//Update the board
-				removeAll();
-				setTurn(board.getActualPlayer(), board.getDiceRoll());
-				setLayout(new GridLayout(2, 0));
-				JPanel topPanel = createTopPanel();
-				JPanel bottomPanel = createBottomPanel();
-				add(topPanel);
-				add(bottomPanel);
+				removePanelFromFrame();
+				board.handleNextTurn();
 			}
 		}
+	}
+	
+	private void removePanelFromFrame() {
+		this.removeAll();
+		clueGameFrame.remove(this); 
+		setTurn(board.getActualPlayer(), board.getDiceRoll());
+		setLayout(new GridLayout(2, 0));
+		JPanel topPanel = createTopPanel();
+		JPanel bottomPanel = createBottomPanel();
+		this.add(topPanel);
+		this.add(bottomPanel);
+		clueGameFrame.add(this, BorderLayout.SOUTH);
+	}
+	
+	private class AccusationListener implements ActionListener {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if (board.getCurrentPlayer() == 0) {
+				AccusationGUI ag = new AccusationGUI();
+				accusationFrame = ag;
+				
+			}
+			
+		}
+		
+	}
+	
+	private class AccusationGUI extends JFrame {
+		
+		public AccusationGUI() {
+			setSize(400, 250);
+			setTitle("Make an Accusation");
+			AccusationPanel ap = new AccusationPanel(this);
+			add(ap, BorderLayout.CENTER);
+			setVisible(true);
+		}
+	}
+	
+	private class AccusationPanel extends JPanel {
+		
+		private JComboBox<String> room, person, weapon;
+		
+		private class ComboListener implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == room) {
+					accusationRoom = room.getSelectedItem().toString();
+				} else if (e.getSource() == person) {
+					accusationPerson = person.getSelectedItem().toString();
+				} else if (e.getSource() == weapon) {
+					accusationWeapon = weapon.getSelectedItem().toString();
+				}
+				
+			}
+			
+		}
+		
+		public AccusationPanel(JFrame frame) {
+			setLayout(new GridLayout(4, 2));
+			JLabel roomLabel = new JLabel("Room");
+			JLabel personLabel = new JLabel("Person");
+			JLabel weaponLabel = new JLabel("Weapon");
+			ComboListener cl = new ComboListener();
+			room = new JComboBox<String>();
+			room.addActionListener(cl);
+			person = new JComboBox<String>();
+			person.addActionListener(cl);
+			weapon = new JComboBox<String>();
+			weapon.addActionListener(cl);
+			for (Card c: board.getDeck()) {
+				if (c.getType() == CardType.ROOM) {
+					room.addItem(c.getCardName());
+				} else if (c.getType() == CardType.PERSON) {
+					person.addItem(c.getCardName());
+				} else if (c.getType() == CardType.WEAPON) {
+					weapon.addItem(c.getCardName());
+				}
+			}
+			add(roomLabel);
+			add(room);
+			add(personLabel);
+			add(person);
+			add(weaponLabel);
+			add(weapon);
+			SubmitAccusationListener sal= new SubmitAccusationListener();
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(sal);
+			JButton cancelButton = new JButton("Cancel");
+			cancelButton.addActionListener(e ->{
+				frame.dispose();
+			});
+			add(submitButton);
+			add(cancelButton);
+		}
+	}
+	
+	private class SubmitAccusationListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Solution s = new Solution();
+			for (Card c: board.getDeck()) {
+				if (c.getCardName().equals(accusationPerson)) {
+					s.setPerson(c);
+				} else if (c.getCardName().equals(accusationRoom)) {
+					s.setRoom(c);
+				} else if (c.getCardName().equals(accusationWeapon)) {
+					s.setWeapon(c);
+				}
+			}
+			board.checkAccusation(s);
+			accusationFrame.dispose();
+		}
+		
 	}
 	
 	public static void main(String[] args) {
@@ -155,6 +276,26 @@ public class GameControlPanel extends JPanel {
 
 	public void setClueGameFrame(JFrame clueGameFrame) {
 		this.clueGameFrame = clueGameFrame;
+	}
+
+	public void setCurrentPlayer(JTextField currentPlayer) {
+		this.currentPlayer = currentPlayer;
+		this.revalidate();
+	}
+
+	public void setCurrentRoll(JTextField currentRoll) {
+		this.currentRoll = currentRoll;
+		this.revalidate();
+	}
+
+	public void setGuess(JTextField guess) {
+		this.guess = guess;
+		this.revalidate();
+	}
+
+	public void setGuessResult(JTextField guessResult) {
+		this.guessResult = guessResult;
+		this.revalidate();
 	}
 	
 }
