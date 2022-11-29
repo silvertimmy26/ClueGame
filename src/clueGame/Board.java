@@ -523,8 +523,11 @@ public class Board extends JPanel {
 		if(getActualPlayer().getIsMoved()) {
 			targets.add(startCell);
 			startCell.setTarget(true);
-			getActualPlayer().setMoved(false);
+		} else {
+			targets.remove(startCell);
 		}
+		getActualPlayer().setMoved(false);
+		
 	}
 	
 	public void recursiveTargeting(BoardCell startCell, int pathLength) {
@@ -645,6 +648,7 @@ public class Board extends JPanel {
 			if (temp !=null) {
 				getActualPlayer().addToSeen(temp);
 				if(currentPlayer == 0) {
+					//Update the seen cards panel and guess result panels
 					gcp.setGuessResult(temp.getCardName());
 					kcp.updateAllPanels(getActualPlayer());
 				}
@@ -661,6 +665,7 @@ public class Board extends JPanel {
 			}
 		}
 		
+		//If there was no cards that disproved, update guess results
 		if(currentPlayer == 0) {
 			gcp.setGuessResult("You might be on to something, partner! Your suggestion wasn't disproved!");
 		}
@@ -720,10 +725,12 @@ public class Board extends JPanel {
 		getActualPlayer().draw(g, cellWidth, cellHeight);
 	}
 	
+	//Create the text field for current player
 	public JTextField setCurrPlayer() {
 		JTextField temp= new JTextField(20);
 		temp.setText(getActualPlayer().getName());
 		
+		//Set color of text field
 		Color color;
 		try {
 		    Field field = Color.class.getField(getActualPlayer().getColor().toLowerCase());
@@ -736,6 +743,8 @@ public class Board extends JPanel {
 	    return temp;
 	}
 	
+	
+	//Create the text field for our current roll
 	public JTextField setRoll (int roll) {
 		JTextField temp=new JTextField(20);
 		temp.setText(Integer.toString(roll));
@@ -801,6 +810,7 @@ public class Board extends JPanel {
 					checkAccusation(s); // either win or eliminate
 				} else {
 					
+					//Code for moving a player when they are suggested 
 					String movePlayer= s.getPerson().getCardName();
 					for(Player p: players) {
 						if(p.getName().equals(movePlayer)) {
@@ -907,6 +917,7 @@ public class Board extends JPanel {
 	
 	private class SuggestionGUI extends JFrame {
 		
+		//GUI for suggestions
 		public SuggestionGUI(String roomName) {
 			setSize(400, 250);
 			setTitle("Make an Suggestion");
@@ -925,6 +936,7 @@ public class Board extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Check sources and update the information
 				if (e.getSource() == person) {
 					suggestionPerson = person.getSelectedItem().toString();
 				} else if (e.getSource() == weapon) {
@@ -936,12 +948,18 @@ public class Board extends JPanel {
 		}
 		
 		public SuggestionPanel(JFrame frame, String roomName) {
+			
+			//Set up the suggestion panel
 			suggestionFrame=frame;
 			setLayout(new GridLayout(4, 2));
+			
+			//Create each label and the combo listeners
 			JLabel roomLabel = new JLabel("Room");
 			JLabel personLabel = new JLabel("Person");
 			JLabel weaponLabel = new JLabel("Weapon");
 			ComboListener cl = new ComboListener();
+			
+			//Set text for room, person, and weapon
 			room = new JTextField();
 			room.setText(roomName);
 			tempRoomName = roomName;
@@ -956,12 +974,16 @@ public class Board extends JPanel {
 					weapon.addItem(c.getCardName());
 				}
 			}
+			
+			//Add each of our creations
 			add(roomLabel);
 			add(room);
 			add(personLabel);
 			add(person);
 			add(weaponLabel);
 			add(weapon);
+			
+			//Make buttons for listening
 			SubmitSuggestionListener ssl= new SubmitSuggestionListener();
 			JButton submitButton = new JButton("Submit");
 			submitButton.addActionListener(ssl);
@@ -978,7 +1000,10 @@ public class Board extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			//Create button for submit on the suggestion panel
 			Solution s = new Solution();
+			
+			//Look thrugh our deck to match things up
 			for (Card c: getDeck()) {
 				if (c.getCardName().equals(suggestionPerson)) {
 					s.setPerson(c);
@@ -988,6 +1013,8 @@ public class Board extends JPanel {
 					s.setRoom(c);
 				}
 			}
+			
+			//Check for moving people
 			String personToMove = s.getPerson().getCardName();
 			Room currRoom=roomMap.get(tempRoomInitial);
 			for (Player p: players) {

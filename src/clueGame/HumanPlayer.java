@@ -11,6 +11,7 @@ public class HumanPlayer extends Player {
 	
 	@Override
 	public void updateHand(Card card) {
+		//Update our hand with the card
 		Set<Card> tempHand = this.getHand();
 		tempHand.add(card);
 		this.addToSeen(card);

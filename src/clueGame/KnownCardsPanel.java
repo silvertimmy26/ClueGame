@@ -18,16 +18,26 @@ public class KnownCardsPanel extends JPanel {
 	private JFrame frame;
 	
 	public KnownCardsPanel(Player player) {
+		
+		//Create the known card panel initally
 		setLayout(new GridLayout(3, 0));
+		
+		//Create the people panel
 		JPanel peoplePanel = new JPanel();
 		peoplePanel.setBorder(new TitledBorder (new EtchedBorder(), "People"));
 		peoplePanel = createPanel(player, CardType.PERSON);
+		
+		//Create the room panel
 		JPanel roomPanel = new JPanel();
 		roomPanel.setBorder(new TitledBorder (new EtchedBorder(), "Rooms"));
 		roomPanel = createPanel(player, CardType.ROOM);
+		
+		//Create the weapon panel
 		JPanel weaponPanel = new JPanel();
 		weaponPanel.setBorder(new TitledBorder (new EtchedBorder(), "Weapons"));
 		weaponPanel = createPanel(player, CardType.WEAPON);
+		
+		//Add all of our panels
 		add(peoplePanel);
 		add(roomPanel);
 		add(weaponPanel);
@@ -35,6 +45,8 @@ public class KnownCardsPanel extends JPanel {
 	}
 	
 	public JPanel updatePanel(Player player, CardType type) {
+		
+		//Update the panels
 		JPanel thePanel = new JPanel();
 		if (type == CardType.PERSON) {
 			thePanel = createPanel(player, CardType.PERSON);
@@ -54,9 +66,12 @@ public class KnownCardsPanel extends JPanel {
 		
 		removeAll();
 		
+		//Create each of the new panels
 		JPanel peoplePanel = this.updatePanel(player, CardType.PERSON);
 		JPanel roomPanel = this.updatePanel(player, CardType.ROOM);
 		JPanel weaponPanel = this.updatePanel(player, CardType.WEAPON);
+		
+		//Add each of the panels
 		peoplePanel.revalidate();
 		this.add(peoplePanel);
 		roomPanel.revalidate();
@@ -84,6 +99,8 @@ public class KnownCardsPanel extends JPanel {
 		seenPanel.setBorder(new TitledBorder (new EtchedBorder(), "Seen:"));
 		boolean isSeenEmpty = true;
 		boolean isHandEmpty = true;
+		
+		//go through the deck to match things up
 		for (Card c: seenCardsCopy) {
 			cardName = new JTextField();
 			cardName.setText(c.getCardName());
@@ -95,6 +112,8 @@ public class KnownCardsPanel extends JPanel {
 				isSeenEmpty = false;
 			}
 		}
+		
+		//check for situations of empty hands and seen
 		if (isHandEmpty) {
 			cardName = new JTextField();
 			cardName.setText("None");

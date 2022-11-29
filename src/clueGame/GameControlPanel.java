@@ -158,7 +158,7 @@ public class GameControlPanel extends JPanel {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			//Check if it is our current players turn
 			if (board.getCurrentPlayer() == 0) {
 				AccusationGUI ag = new AccusationGUI();
 				accusationFrame = ag;
@@ -171,6 +171,7 @@ public class GameControlPanel extends JPanel {
 	
 	private class AccusationGUI extends JFrame {
 		
+		//Make the accusation panel
 		public AccusationGUI() {
 			setSize(400, 250);
 			setTitle("Make an Accusation");
@@ -188,6 +189,7 @@ public class GameControlPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Check the source panels for information
 				if (e.getSource() == room) {
 					accusationRoom = room.getSelectedItem().toString();
 				} else if (e.getSource() == person) {
@@ -201,17 +203,23 @@ public class GameControlPanel extends JPanel {
 		}
 		
 		public AccusationPanel(JFrame frame) {
+			
+			//Make the accusation panel
 			setLayout(new GridLayout(4, 2));
 			JLabel roomLabel = new JLabel("Room");
 			JLabel personLabel = new JLabel("Person");
 			JLabel weaponLabel = new JLabel("Weapon");
 			ComboListener cl = new ComboListener();
+			
+			//Create each of the combo boxes
 			room = new JComboBox<String>();
 			room.addActionListener(cl);
 			person = new JComboBox<String>();
 			person.addActionListener(cl);
 			weapon = new JComboBox<String>();
 			weapon.addActionListener(cl);
+			
+			//Search through our deck to match the cards and words
 			for (Card c: board.getDeck()) {
 				if (c.getType() == CardType.ROOM) {
 					room.addItem(c.getCardName());
@@ -221,12 +229,16 @@ public class GameControlPanel extends JPanel {
 					weapon.addItem(c.getCardName());
 				}
 			}
+			
+			//Add everything to the accusation panel
 			add(roomLabel);
 			add(room);
 			add(personLabel);
 			add(person);
 			add(weaponLabel);
 			add(weapon);
+			
+			//Add button listeners
 			SubmitAccusationListener sal= new SubmitAccusationListener();
 			JButton submitButton = new JButton("Submit");
 			submitButton.addActionListener(sal);
@@ -243,7 +255,11 @@ public class GameControlPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
+			//Create the type solution
 			Solution s = new Solution();
+			
+			//Look through our deck to match things
 			for (Card c: board.getDeck()) {
 				if (c.getCardName().equals(accusationPerson)) {
 					s.setPerson(c);
