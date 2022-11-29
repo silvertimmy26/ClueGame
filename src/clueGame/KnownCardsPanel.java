@@ -57,10 +57,14 @@ public class KnownCardsPanel extends JPanel {
 		JPanel peoplePanel = this.updatePanel(player, CardType.PERSON);
 		JPanel roomPanel = this.updatePanel(player, CardType.ROOM);
 		JPanel weaponPanel = this.updatePanel(player, CardType.WEAPON);
+		peoplePanel.revalidate();
 		this.add(peoplePanel);
+		roomPanel.revalidate();
 		this.add(roomPanel);
+		weaponPanel.revalidate();
 		this.add(weaponPanel);
 		frame.add(this,BorderLayout.EAST);
+		
 	}
 	
 	public JPanel createPanel(Player player, CardType type) {
@@ -101,7 +105,7 @@ public class KnownCardsPanel extends JPanel {
 			cardName.setText("None");
 			seenPanel.add(cardName);	
 		}
-		
+
 		thePanel.add(inHandPanel);
 		thePanel.add(seenPanel);
 		return thePanel;

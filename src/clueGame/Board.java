@@ -643,8 +643,10 @@ public class Board extends JPanel {
 			temp=players.get(playerLookAt).disproveSuggestion(suggestion);
 			//Return if there is a card that can disprove
 			if (temp !=null) {
+				getActualPlayer().addToSeen(temp);
 				if(currentPlayer == 0) {
 					gcp.setGuessResult(temp.getCardName());
+					kcp.updateAllPanels(getActualPlayer());
 				}
 				else {
 					gcp.setGuessResult("Disproved, Buckaroo");
@@ -697,7 +699,7 @@ public class Board extends JPanel {
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
 				grid[i][j].draw(g, cellWidth, cellHeight, cellWidth * j, cellHeight * i, roomMap, currentPlayer);
-				// if it's a label cell, add to an arraylist that has roomLabel cells
+				// if it's a label cell, add to an array list that has roomLabel cells
 				if (grid[i][j].getIsLabel()) {
 					roomLabels.add(grid[i][j]);
 				}
@@ -715,6 +717,7 @@ public class Board extends JPanel {
 		for (Player p: players) {
 			p.draw(g, cellWidth, cellHeight);
 		}
+		getActualPlayer().draw(g, cellWidth, cellHeight);
 	}
 	
 	public JTextField setCurrPlayer() {
@@ -762,10 +765,14 @@ public class Board extends JPanel {
 		Set<Character> roomTargets = new HashSet<Character>();
 		//gcp.setTurn(player, diceRoll);
 		JTextField currPlayer = setCurrPlayer();
+	    revalidate();
+	
 		gcp.setCurrentPlayer(currPlayer);
+		
 		JTextField currRoll = setRoll(diceRoll);
 		gcp.setCurrentRoll(currRoll);
-		gcp.revalidate();
+		//gcp.setTurn(player, diceRoll);
+		revalidate();
 		
 		return true;
 	}
@@ -780,6 +787,8 @@ public class Board extends JPanel {
 			repaint();
 			currentPlayerDone = false;
 		} else {
+			
+			grid[getActualPlayer().getRow()][getActualPlayer().getColumn()].setOccupied(false);
 			//turn situation for computer players
 			Solution s = new Solution();
 			s = players.get(currentPlayer).turnHandling(targets, roomMap);
@@ -806,7 +815,10 @@ public class Board extends JPanel {
 					if (c != null) {
 						players.get(currentPlayer).addToSeen(c);
 					}
+					kcp.updateAllPanels(players.get(0));
 				}
+			} else {
+				grid[getActualPlayer().getRow()][getActualPlayer().getColumn()].setOccupied(true);
 			}
 		}
 	}
@@ -822,6 +834,7 @@ public class Board extends JPanel {
 				return;
 			} else {
 				//Check click location
+				grid[getActualPlayer().getRow()][getActualPlayer().getColumn()].setOccupied(false);
 				boolean validClick = false;
 				for (int i = 0; i < numRows; i++) {
 					for (int j = 0; j < numColumns; j++) {
@@ -863,6 +876,8 @@ public class Board extends JPanel {
 				tempRoomInitial=playerLocation.getInitial();
 				SuggestionGUI sg = new SuggestionGUI(playerLocation.getRoomName());
 				repaint(); // will be called elsewhere depending on suggested player to move that player
+			} else {
+			grid[playerLocation.getRow()][playerLocation.getCol()].setOccupied(true);	
 			}
 			currentPlayerDone=true;
 		}
@@ -969,7 +984,9 @@ public class Board extends JPanel {
 					s.setPerson(c);
 				} else if (c.getCardName().equals(suggestionWeapon)) {
 					s.setWeapon(c);
-				} else if (c.getCardName().equals(tempRoomName));
+				} else if (c.getCardName().equals(tempRoomName)) {
+					s.setRoom(c);
+				}
 			}
 			String personToMove = s.getPerson().getCardName();
 			Room currRoom=roomMap.get(tempRoomInitial);

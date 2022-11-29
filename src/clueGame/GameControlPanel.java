@@ -20,8 +20,8 @@ import javax.swing.border.TitledBorder;
 
 public class GameControlPanel extends JPanel {
 	
-	private JTextField currentPlayer;
-	private JTextField currentRoll;
+	private JTextField currentPlayer= new JTextField();
+	private JTextField currentRoll= new JTextField();
 	private JTextField guess;
 	private JTextField guessResult;
 	private Board board;
@@ -47,7 +47,7 @@ public class GameControlPanel extends JPanel {
 		JPanel turnPanel = new JPanel();
 		turnPanel.setLayout(new GridLayout(2, 1));
 		JLabel whoseTurn = new JLabel("Whose turn?");
-		currentPlayer = new JTextField(20);
+		
 		turnPanel.add(whoseTurn);
 		turnPanel.add(currentPlayer);
 		returnPanel.add(turnPanel);
@@ -55,7 +55,7 @@ public class GameControlPanel extends JPanel {
 		JPanel rollPanel = new JPanel();
 		rollPanel.setLayout(new GridLayout(1, 2));
 		JLabel roll = new JLabel("Roll:");
-		currentRoll = new JTextField(20);
+		
 		rollPanel.add(roll);
 		rollPanel.add(currentRoll);
 		returnPanel.add(rollPanel);
@@ -120,6 +120,7 @@ public class GameControlPanel extends JPanel {
 		}
 		currentPlayer.setBackground(color);
 	    currentPlayer.setOpaque(true);
+	    revalidate();
 	}
 	
 	private class NextListener implements ActionListener {
@@ -144,7 +145,7 @@ public class GameControlPanel extends JPanel {
 	private void removePanelFromFrame() {
 		this.removeAll();
 		clueGameFrame.remove(this); 
-		setTurn(board.getActualPlayer(), board.getDiceRoll());
+		//setTurn(board.getActualPlayer(), board.getDiceRoll());
 		setLayout(new GridLayout(2, 0));
 		JPanel topPanel = createTopPanel();
 		JPanel bottomPanel = createBottomPanel();

@@ -35,7 +35,9 @@ public class ComputerPlayer extends Player {
 		ourSeen=this.getSeenCards();
 		
 		//Go through all cards in the deck to find our room card and to remove the ones that we've seen
+	
 		for(Card c:tempDeck) {
+			
 			if(c.getCardName().equals(currentRoom.getName())){
 				ourSuggestion.setRoom(c);
 			}
